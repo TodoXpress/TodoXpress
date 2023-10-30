@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 25.0.1706.6
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TodoXpress.Ui", "TodoXpress.Ui", "{096F4C33-9440-47CD-B0F3-F404AA573907}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoXpress.Ui.Native", "TodoXpress.Ui.Native\TodoXpress.Ui.Native.csproj", "{57661F77-E8EE-45CE-A618-D01C63FA508C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{57661F77-E8EE-45CE-A618-D01C63FA508C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{57661F77-E8EE-45CE-A618-D01C63FA508C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{57661F77-E8EE-45CE-A618-D01C63FA508C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{57661F77-E8EE-45CE-A618-D01C63FA508C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C80D3628-DE32-47F8-A2B5-FDBEE2A0D925}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{57661F77-E8EE-45CE-A618-D01C63FA508C} = {096F4C33-9440-47CD-B0F3-F404AA573907}
+	EndGlobalSection
+EndGlobal

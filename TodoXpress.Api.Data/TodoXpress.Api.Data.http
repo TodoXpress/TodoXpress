@@ -1,0 +1,7 @@
+﻿@TodoXpress.Api.Data_HostAddress = http://localhost:5227
+
+GET {{TodoXpress.Api.Data_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+
