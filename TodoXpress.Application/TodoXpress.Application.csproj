@@ -6,4 +6,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\TodoXpress.Domain\TodoXpress.Domain.csproj" />
+  </ItemGroup>
 </Project>
