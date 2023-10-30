@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoXpress.Ui.Native", "Tod
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoXpress.Api.Data", "TodoXpress.Api.Data\TodoXpress.Api.Data.csproj", "{4693523C-14B5-4869-8CBE-E4A6613806A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoXpress.Api.Identity", "TodoXpress.Api.Identity\TodoXpress.Api.Identity.csproj", "{ECF55892-44E5-41BD-AD89-F1F77A998F23}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoXpress.Api.Administration", "TodoXpress.Api.Identity\TodoXpress.Api.Administration.csproj", "{ECF55892-44E5-41BD-AD89-F1F77A998F23}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoXpress.Application", "TodoXpress.Application\TodoXpress.Application.csproj", "{E5813B20-63AD-4476-8635-EC53516DDC66}"
 EndProject
