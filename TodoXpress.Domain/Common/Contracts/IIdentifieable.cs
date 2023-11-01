@@ -7,7 +7,7 @@
 public interface IIdentifieable
 {
     /// <summary>
-    /// The Id for identification
+    /// The unique identifier of the object.
     /// </summary>
     public Guid Id { get; set; }
 }

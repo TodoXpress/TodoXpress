@@ -14,8 +14,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Administration\" />
-    <Folder Include="Common\" />
-    <Folder Include="Calendars\" />
     <Folder Include="Common\Contracts\" />
+    <Folder Include="Administration\" />
   </ItemGroup>
 </Project>

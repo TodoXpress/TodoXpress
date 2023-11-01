@@ -28,6 +28,6 @@ public class Calendar : IIdentifieable
     /// <summary>
     /// The events that belongs to an calendar.
     /// </summary>
-    public List<Event> Events { get; set; } = new();
+    public List<CalendarEvent> Events { get; set; } = [];
 }
 
