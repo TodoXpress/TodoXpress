@@ -23,7 +23,7 @@ public sealed class Calendar : IIdentifieable
     /// <summary>
     /// The <see cref="CalendarUser"/> who owns the calendar.
     /// </summary>
-    public required CalendarUser Owner { get; set; }
+    public required User Owner { get; set; }
 
     /// <summary>
     /// The events that belongs to an calendar.
