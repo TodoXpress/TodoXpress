@@ -1,4 +1,4 @@
-﻿namespace TodoXpress.Domain;
+﻿namespace TodoXpress.Domain.Calendars.Enumerations;
 
 /// <summary>
 /// Defines the lenght of the itteration of a serial event.

@@ -1,4 +1,4 @@
-﻿using TodoXpress.Domain.Calendars.ValueTypes;
+﻿using TodoXpress.Domain.Calendars.Enumerations;
 
 namespace TodoXpress.Domain.Calendars;
 

@@ -1,4 +1,4 @@
-﻿namespace TodoXpress.Domain.Calendars.ValueTypes;
+﻿namespace TodoXpress.Domain.Calendars.Enumerations;
 
 /// <summary>
 /// Defines the types how an event is displayed.
