@@ -1,5 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using TodoXpress.Domain.Calendars.ValueTypes;
+﻿using TodoXpress.Domain.Calendars.ValueTypes;
 
 namespace TodoXpress.Domain.Calendars;
 
@@ -76,8 +75,12 @@ public sealed class CalendarEvent : IIdentifieable
     /// </summary>
     public string? Note { get; set; }
 
+    /// <summary>
+    /// Files than can be attached to an event.
+    /// </summary>
+    public List<IAttachment> FileAttachments { get; set; } = [];
+
     // Todo:
-    // - File Attatchments
     // - Internal Links
     // - Url
     // - Tags

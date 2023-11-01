@@ -5,5 +5,6 @@ namespace TodoXpress.Domain.Calendars;
 /// </summary>
 public class SerialEvent : IIdentifieable
 {
+    /// <inheritdoc/>
     public Guid Id { get; set; }
 }
