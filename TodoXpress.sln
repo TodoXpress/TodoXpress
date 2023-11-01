@@ -9,7 +9,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoXpress.Ui.Native", "Tod
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoXpress.Api.Data", "TodoXpress.Api.Data\TodoXpress.Api.Data.csproj", "{4693523C-14B5-4869-8CBE-E4A6613806A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoXpress.Api.Administration", "TodoXpress.Api.Administration\TodoXpress.Api.Administration.csproj", "{ECF55892-44E5-41BD-AD89-F1F77A998F23}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoXpress.Api.Identity", "TodoXpress.Api.Identity\TodoXpress.Api.Identity.csproj", "{ECF55892-44E5-41BD-AD89-F1F77A998F23}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TodoXpress.Application", "TodoXpress.Application\TodoXpress.Application.csproj", "{E5813B20-63AD-4476-8635-EC53516DDC66}"
 EndProject
@@ -65,14 +65,14 @@ Global
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {C80D3628-DE32-47F8-A2B5-FDBEE2A0D925}
-	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{57661F77-E8EE-45CE-A618-D01C63FA508C} = {096F4C33-9440-47CD-B0F3-F404AA573907}
-		{BE2E5727-5955-4698-93DF-C5FB4FEB3B4D} = {096F4C33-9440-47CD-B0F3-F404AA573907}
-		{8B0E324A-CEE2-4B14-8FD0-BA7FDAB1ABD3} = {096F4C33-9440-47CD-B0F3-F404AA573907}
-		{ECF55892-44E5-41BD-AD89-F1F77A998F23} = {0252C3CB-C47A-4B63-A7ED-DD58927B37C4}
 		{4693523C-14B5-4869-8CBE-E4A6613806A3} = {0252C3CB-C47A-4B63-A7ED-DD58927B37C4}
+		{ECF55892-44E5-41BD-AD89-F1F77A998F23} = {0252C3CB-C47A-4B63-A7ED-DD58927B37C4}
+		{8B0E324A-CEE2-4B14-8FD0-BA7FDAB1ABD3} = {096F4C33-9440-47CD-B0F3-F404AA573907}
+		{BE2E5727-5955-4698-93DF-C5FB4FEB3B4D} = {096F4C33-9440-47CD-B0F3-F404AA573907}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C80D3628-DE32-47F8-A2B5-FDBEE2A0D925}
 	EndGlobalSection
 EndGlobal
