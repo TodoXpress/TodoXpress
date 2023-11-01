@@ -5,7 +5,7 @@ namespace TodoXpress.Domain.Calendars;
 /// <summary>
 /// Represents a calendar to track events.
 /// </summary>
-public class Calendar : IIdentifieable
+public sealed class Calendar : IIdentifieable
 {
     /// <inheritdoc/>
     public Guid Id { get; set; }
@@ -23,7 +23,7 @@ public class Calendar : IIdentifieable
     /// <summary>
     /// The <see cref="CalendarUser"/> who owns the calendar.
     /// </summary>
-    public CalendarUser Owner { get; set; }
+    public required CalendarUser Owner { get; set; }
 
     /// <summary>
     /// The events that belongs to an calendar.
