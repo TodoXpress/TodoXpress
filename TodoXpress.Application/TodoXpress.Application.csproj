@@ -14,4 +14,10 @@
     <PackageReference Include="MediatR" Version="12.1.1" />
     <PackageReference Include="OneOf" Version="3.0.263" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="CalendarDomain/Events/" />
+    <Folder Include="CalendarDomain/SerialEvent/" />
+    <Folder Include="Contracts/MediatR/" />
+  </ItemGroup>
 </Project>
