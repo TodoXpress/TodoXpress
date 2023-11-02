@@ -2,7 +2,7 @@
 using OneOf;
 using TodoXpress.Domain;
 
-namespace TodoXpress.Application;
+namespace TodoXpress.Application.Contracts.MediatR;
 
 /// <summary>
 /// Defines a handler of a mediatR request.
