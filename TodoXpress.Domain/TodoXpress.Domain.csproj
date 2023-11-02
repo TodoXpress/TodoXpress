@@ -18,4 +18,7 @@
     <Folder Include="Common\Contracts\" />
     <Folder Include="Administration\" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="OneOf" Version="3.0.263" />
+  </ItemGroup>
 </Project>
