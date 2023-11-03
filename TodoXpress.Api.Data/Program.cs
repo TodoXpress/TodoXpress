@@ -1,4 +1,5 @@
-﻿using TodoXpress.Api.Data.DependencyInjection;
+﻿using Carter;
+using TodoXpress.Api.Data.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,6 +9,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddMediatR();
+builder.Services.AddCarter();
 
 // Configure the HTTP request pipeline.
 var app = builder.Build();
@@ -17,6 +19,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.MapCarter();
 
 app.UseHttpsRedirection();
 
