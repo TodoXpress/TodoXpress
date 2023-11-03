@@ -23,12 +23,17 @@ public class CalendarModul(ISender mediatR) : ICarterModule
         group.MapPut("/", CreateCalendar)
             .Accepts<CreateCalendarDTO>(Media.Application.Json)
             .Produces<Guid>(StatusCodes.Status201Created)
-            .Produces<IError>(StatusCodes.Status400BadRequest)
+            .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
             .WithDisplayName("Create Calendar.")
-            .WithDescription("Creates a calendar if it doesnt exists allready.")
+            .WithDescription("Creates a new calendar.")
             .WithOpenApi();
     }
 
+    /// <summary>
+    /// Endpoint for creating an new calendar if it doesnt allready exists.
+    /// </summary>
+    /// <param name="createRequest">The request for creating the calendar.</param>
+    /// <returns>A http result.</returns>
     public async Task<IResult> CreateCalendar([FromBody]CreateCalendarDTO createRequest)
     {
         var createCommand = new CreateCalendarCommand()
