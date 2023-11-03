@@ -1,4 +1,4 @@
-﻿namespace TodoXpress.Domain;
+﻿namespace TodoXpress.Domain.Calendars;
 
 public record struct FileAttachment : IAttachment
 {
