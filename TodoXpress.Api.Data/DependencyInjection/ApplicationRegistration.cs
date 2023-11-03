@@ -1,4 +1,6 @@
-﻿using TodoXpress.Application;
+﻿using Microsoft.EntityFrameworkCore;
+using TodoXpress.Application;
+using TodoXpress.Infastructure.Persistence.Contexts;
 
 namespace TodoXpress.Api.Data.DependencyInjection;
 
@@ -16,6 +18,20 @@ public static class ApplicationRegistration
     {
         services.AddMediatR(x => 
             x.RegisterServicesFromAssembly(typeof(MediatRAnchor).Assembly));
+
+        return services;
+    }
+
+    /// <summary>
+    /// Adds the DbContext for the Calendar Domain.
+    /// </summary>
+    /// <param name="services">The <see cref="IServiceCollection"/>.</param>
+    /// <param name="config">The <see cref="IConfiguration"/>.</param>
+    /// <returns>The <see cref="IServiceCollection"/>.</returns>
+    public static IServiceCollection AddCalendarDbContext(this IServiceCollection services, IConfiguration config)
+    {
+        services.AddDbContext<CalendarDbContext>(options =>
+            options.UseNpgsql(config.GetConnectionString("Default")));
 
         return services;
     }

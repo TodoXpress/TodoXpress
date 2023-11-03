@@ -5,7 +5,6 @@ using Carter;
 using MediatR;
 using TodoXpress.Application.CalendarDomain.Calendars.Commands.CreateCalendar;
 using TodoXpress.Domain.Calendars.DTO;
-using TodoXpress.Domain;
 
 namespace TodoXpress.Api.Data;
 

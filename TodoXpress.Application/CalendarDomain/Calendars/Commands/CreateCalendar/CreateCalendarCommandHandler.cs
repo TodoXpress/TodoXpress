@@ -9,7 +9,15 @@ public class CreateCalendarCommandHandler : IOneOfRequestHandler<CreateCalendarC
 {
     public Task<OneOf<Guid, IError>> Handle(CreateCalendarCommand request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        // validate request
+
+        // check if calendar exists
+
+        // save calendar
+
+        // return id of the calendar
+
+        return default;
     }
 
 }

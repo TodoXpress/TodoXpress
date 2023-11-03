@@ -1,6 +1,6 @@
 ﻿namespace TodoXpress.Domain.Calendars;
 
-public record struct FileAttachment : IAttachment
+public class FileAttachment : IAttachment
 {
     /// <inheritdoc/>
     public Guid Id { get; set; }
@@ -8,10 +8,10 @@ public record struct FileAttachment : IAttachment
     /// <summary>
     /// The name of the file.
     /// </summary>
-    public string FileName { get; set; }
+    public string FileName { get; set; } = string.Empty;
 
     /// <summary>
     /// The content of the file as a byte array.
     /// </summary>
-    public byte[] Content { get; set; }
+    public byte[] Content { get; set; } = [];
 }
