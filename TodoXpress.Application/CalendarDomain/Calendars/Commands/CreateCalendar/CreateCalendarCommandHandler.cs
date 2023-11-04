@@ -10,19 +10,19 @@ namespace TodoXpress.Application.CalendarDomain.Calendars.Commands.CreateCalenda
 
 public class CreateCalendarCommandHandler : IOneOfRequestHandler<CreateCalendarCommand, Guid>
 {
-    IValidator<CreateCalendarCommand> validator;
-    ICalendarDataService calendarService;
+    readonly IValidator<CreateCalendarCommand> _validator;
+    readonly ICalendarDataService _calendarService;
 
     public CreateCalendarCommandHandler(IValidator<CreateCalendarCommand> validator, ICalendarDataService calendarData)
     {
-        this.validator = validator;
-        this.calendarService = calendarData;
+        _validator = validator;
+        _calendarService = calendarData;
     }
 
     public async Task<OneOf<Guid, IError>> Handle(CreateCalendarCommand request, CancellationToken cancellationToken)
     {
         // validate request
-        var validationResult = await validator.ValidateAsync(request, cancellationToken);
+        var validationResult = await _validator.ValidateAsync(request, cancellationToken);
 
         if (!validationResult.IsValid)
         {
@@ -41,7 +41,7 @@ public class CreateCalendarCommandHandler : IOneOfRequestHandler<CreateCalendarC
         };
 
         // save calendar
-        var calendarId = await calendarService.CreateAsync(calendar);
+        var calendarId = await _calendarService.CreateAsync(calendar);
         
         if (Equals(calendarId, Guid.Empty))
             return new PersistenceError<Calendar>();
