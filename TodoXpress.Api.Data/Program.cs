@@ -2,20 +2,20 @@
 using TodoXpress.Api.Data.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
-
 var config = builder.Configuration;
 
-// Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddCalendarDbContext(config);
-
+// add application layer
 builder.Services.AddMediatR();
 builder.Services.AddCarter();
 
-// Configure the HTTP request pipeline.
+// add infastructure layer
+builder.Services.AddCalendarDbContext(config);
+builder.Services.AddFluentValidation();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
