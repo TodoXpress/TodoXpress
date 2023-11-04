@@ -1,5 +1,6 @@
 ﻿using Carter;
 using TodoXpress.Api.Data.DependencyInjection;
+using TodoXpress.Infastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -9,12 +10,15 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // add application layer
-builder.Services.AddMediatR();
-builder.Services.AddCarter();
+builder.Services
+    .AddMediatR()
+    .AddCarter();
 
 // add infastructure layer
-builder.Services.AddCalendarDbContext(config);
-builder.Services.AddFluentValidation();
+builder.Services
+    .AddCalendarDbContext(config)
+    .AddDataServices()
+    .AddFluentValidation();
 
 var app = builder.Build();
 
