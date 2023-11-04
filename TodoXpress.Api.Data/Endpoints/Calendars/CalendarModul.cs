@@ -38,10 +38,8 @@ public class CalendarModul(ISender mediatR) : ICarterModule
         var createCommand = new CreateCalendarCommand()
         {
             Name = createRequest.Name,
-            Color = Color.FromArgb(createRequest.Color.A, 
-                createRequest.Color.R,
-                createRequest.Color.G,
-                createRequest.Color.B)
+            Color = createRequest.Color,
+            User = new()
         };
 
         var result = await _mediatR.Send(createCommand);

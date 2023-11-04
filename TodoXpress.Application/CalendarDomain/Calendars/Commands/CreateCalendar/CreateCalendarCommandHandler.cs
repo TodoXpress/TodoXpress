@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Drawing;
 using FluentValidation;
 using OneOf;
 using TodoXpress.Application.Contracts.MediatR;
@@ -32,11 +33,12 @@ public class CreateCalendarCommandHandler : IOneOfRequestHandler<CreateCalendarC
             };
         }
 
+        var rc = request.Color;
         var calendar = new Calendar()
         {
             Id = Guid.NewGuid(),
             Name = request.Name,
-            Color = request.Color,
+            Color = Color.FromArgb(rc.A, rc.R, rc.G, rc.B),
             Owner = request.User
         };
 
