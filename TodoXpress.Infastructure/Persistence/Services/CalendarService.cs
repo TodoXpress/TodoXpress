@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using TodoXpress.Application.Contracts.Persistence;
 using TodoXpress.Domain.Calendars;
 using TodoXpress.Infastructure.Persistence.Contexts;
@@ -7,12 +6,9 @@ using TodoXpress.Infastructure.Persistence.Services;
 
 namespace TodoXpress.Infastructure;
 
-public sealed class CalendarService : DataServiceBase<Calendar>, ICalendarDataService
+public sealed class CalendarService(CalendarDbContext context) 
+    : DataServiceBase<Calendar>(context), ICalendarDataService
 {
-    public CalendarService(CalendarDbContext context) : base(context)
-    {
-    }
-
     public async Task<Calendar?> ReadSingleAsync(Guid id)
     {
         return await _set
@@ -23,34 +19,44 @@ public sealed class CalendarService : DataServiceBase<Calendar>, ICalendarDataSe
     public async Task<List<Calendar>> ReadAllFromUserAsync(User user)
     {
         var calendars = await _set
+            .AsNoTracking()
             .Where(c => Equals(c.Owner.Id, user.Id))
             .ToListAsync();
         
         return calendars;
     }
 
-    public Task<List<Calendar>> ReadAllAsync()
+    public async Task<Guid> CreateAsync(Calendar entity)
     {
-        throw new NotImplementedException();
+        await _set.AddAsync(entity);
+
+        return entity.Id;
     }
 
-    public Task<Guid> CreateAsync(Calendar entity)
+    public async Task<Guid> UpdateAsync(Calendar entity)
     {
-        throw new NotImplementedException();
+        var calendar = await ReadSingleAsync(entity.Id);
+        if (calendar is null)
+            return Guid.Empty;
+
+        _set.Entry(calendar).CurrentValues.SetValues(entity);
+
+        return entity.Id;
     }
 
-    public Task<Guid> UpdateAsync(Calendar entity)
+    public async Task<Guid> DeleteAsync(Calendar entity)
     {
-        throw new NotImplementedException();
+        return await DeleteAsync(entity.Id);
     }
 
-    public Task<Guid> DeleteAsync(Calendar entity)
+    public async Task<Guid> DeleteAsync(Guid id)
     {
-        throw new NotImplementedException();
-    }
+        var calendar = await ReadSingleAsync(id);
+        if (calendar is null)
+            return Guid.Empty;
 
-    public Task<Guid> DeleteAsync(Guid id)
-    {
-        throw new NotImplementedException();
+        _set.Remove(calendar);
+
+        return calendar.Id;
     }
 }
