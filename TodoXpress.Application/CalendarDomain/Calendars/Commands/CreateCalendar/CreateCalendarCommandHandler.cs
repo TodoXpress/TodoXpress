@@ -43,6 +43,9 @@ public class CreateCalendarCommandHandler : IOneOfRequestHandler<CreateCalendarC
         // save calendar
         var calendarId = await calendarService.CreateAsync(calendar);
         
+        if (Equals(calendarId, Guid.Empty))
+            return new PersistenceError<Calendar>();
+
         return calendarId;
     }
 
