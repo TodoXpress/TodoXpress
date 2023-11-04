@@ -18,12 +18,13 @@ public class CalendarModul(ISender mediatR) : ICarterModule
 
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/calendar");
+        var group = app.MapGroup("/calendar")
+            .WithDisplayName("Calendar operations");
+
         group.MapPut("/", CreateCalendar)
             .Accepts<CreateCalendarDTO>(Media.Application.Json)
             .Produces<Guid>(StatusCodes.Status201Created)
             .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
-            .WithDisplayName("Create Calendar.")
             .WithDescription("Creates a new calendar.")
             .WithOpenApi();
     }
