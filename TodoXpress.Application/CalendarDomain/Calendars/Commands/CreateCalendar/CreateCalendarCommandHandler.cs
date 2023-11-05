@@ -41,7 +41,7 @@ public class CreateCalendarCommandHandler : IOneOfRequestHandler<CreateCalendarC
         {
             Id = Guid.NewGuid(),
             Name = request.Name,
-            Color = Color.FromArgb(rc.A, rc.R, rc.G, rc.B),
+            Color = new(rc.R, rc.G, rc.B, rc.A),
             Owner = request.User
         };
 

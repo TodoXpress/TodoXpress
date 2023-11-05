@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+﻿using TodoXpress.Domain.Common;
 
 namespace TodoXpress.Domain.Calendars;
 
@@ -18,7 +18,7 @@ public sealed class Calendar : IIdentifieable
     /// <summary>
     /// The color of the calendar in the ui.
     /// </summary>
-    public Color Color { get; set; }
+    public Color Color { get; set; } = new();
 
     /// <summary>
     /// The <see cref="CalendarUser"/> who owns the calendar.
