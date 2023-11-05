@@ -28,8 +28,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.MapCarter();
-
 app.UseHttpsRedirection();
+
+app.MapCarter();
 
 app.Run();
