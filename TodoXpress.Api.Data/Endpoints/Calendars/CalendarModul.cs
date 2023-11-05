@@ -12,10 +12,8 @@ namespace TodoXpress.Api.Data;
 /// An API Endpoint with Carter module.
 /// </summary>
 /// <param name="mediatR">The MediatR instance for the application.</param>
-public class CalendarModul(ISender mediatR) : ICarterModule
+public class CalendarModul : ICarterModule
 {
-    private readonly ISender _mediatR = mediatR;
-
     public void AddRoutes(IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("/calendar")
@@ -34,7 +32,7 @@ public class CalendarModul(ISender mediatR) : ICarterModule
     /// </summary>
     /// <param name="createRequest">The request for creating the calendar.</param>
     /// <returns>A http result.</returns>
-    public async Task<IResult> CreateCalendar([FromBody]CreateCalendarDTO createRequest)
+    public async Task<IResult> CreateCalendar([FromServices] ISender mediatR, [FromBody]CreateCalendarDTO createRequest)
     {
         var createCommand = new CreateCalendarCommand()
         {
@@ -43,7 +41,7 @@ public class CalendarModul(ISender mediatR) : ICarterModule
             User = new()
         };
 
-        var result = await _mediatR.Send(createCommand);
+        var result = await mediatR.Send(createCommand);
 
         return result.Match(guid => Results.Created("/calendar", guid),
             error => Results.BadRequest(ErrorResponse.Create(error)));
