@@ -14,8 +14,11 @@ public static class ApplicationRegistration
     /// <returns>The <see cref="IServiceCollection"/>.</returns>
     public static IServiceCollection AddMediatR(this IServiceCollection services)
     {
-        services.AddMediatR(x => 
-            x.RegisterServicesFromAssembly(typeof(MediatRAnchor).Assembly));
+        services.AddMediatR(x =>
+        {
+            x.RegisterServicesFromAssembly(typeof(MediatRAnchor).Assembly);
+            x.Lifetime = ServiceLifetime.Scoped;
+        });
 
         return services;
     }

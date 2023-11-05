@@ -31,7 +31,7 @@ public static class InfastructureRegistration
     /// <returns>The <see cref="IServiceCollection"/>.</returns>
     public static IServiceCollection AddFluentValidation(this IServiceCollection services)
     {
-        services.AddValidatorsFromAssemblyContaining<CreateCalendarValidator>(ServiceLifetime.Scoped);
+        services.AddValidatorsFromAssemblyContaining<CreateCalendarValidator>(ServiceLifetime.Singleton);
 
         return services;
     }
