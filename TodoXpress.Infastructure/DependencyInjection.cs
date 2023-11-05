@@ -1,8 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using TodoXpress.Application;
 using TodoXpress.Application.Contracts.Persistence;
 using TodoXpress.Application.Contracts.Persistence.Services;
-using TodoXpress.Infastructure.Persistence.Contexts;
 
 namespace TodoXpress.Infastructure;
 
