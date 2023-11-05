@@ -1,5 +1,4 @@
-﻿using System.Drawing;
-using Media = System.Net.Mime.MediaTypeNames;
+﻿using Media = System.Net.Mime.MediaTypeNames;
 using Microsoft.AspNetCore.Mvc;
 using Carter;
 using MediatR;
