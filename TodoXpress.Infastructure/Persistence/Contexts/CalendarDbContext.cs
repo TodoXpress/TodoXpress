@@ -24,4 +24,10 @@ public sealed class CalendarDbContext : DbContext, IDbContext
             this.Database.Migrate();
         }
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.HasDefaultSchema("Calendar");
+        base.OnModelCreating(modelBuilder);
+    }
 }
