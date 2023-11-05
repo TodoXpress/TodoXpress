@@ -1,0 +1,44 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "dotnet",
+			"task": "build",
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"group": "build",
+			"label": "dotnet build"
+		},
+		{
+			"type": "maui",
+			"targetFramework": "net8.0-ios",
+			"configuration": "Debug",
+			"project": "/Users/fabian/Developer/TodoXpress_Project/TodoXpress/TodoXpress.Ui.Native/TodoXpress.Ui.Native.csproj",
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"label": "maui: Build"
+		},
+		{
+			"type": "maui",
+			"targetFramework": "net8.0-android",
+			"configuration": "Debug",
+			"project": "/Users/fabian/Developer/TodoXpress_Project/TodoXpress/TodoXpress.Ui.Native/TodoXpress.Ui.Native.csproj",
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"label": "maui: Build"
+		},
+		{
+			"type": "maui",
+			"targetFramework": "net8.0-maccatalyst",
+			"configuration": "Debug",
+			"project": "/Users/fabian/Developer/TodoXpress_Project/TodoXpress/TodoXpress.Ui.Native/TodoXpress.Ui.Native.csproj",
+			"problemMatcher": [
+				"$msCompile"
+			],
+			"label": "maui: Build"
+		}
+	]
+}

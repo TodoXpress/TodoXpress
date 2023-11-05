@@ -1,14 +1,73 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
     "configurations": [
         {
-            "name": ".NET MAUI",
+            "name": "TodoXpress.Api.Data",
+            "type": "coreclr",
+            "request": "launch",
+            "program": "${workspaceFolder}/TodoXpress.Api.Data/bin/Debug/net8.0/TodoXpress.Api.Data.dll",
+            "preLaunchTask": "dotnet build",
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "launchSettingsProfile": "https",
+            "cwd": "${workspaceFolder}/TodoXpress.Api.Data"
+        },
+        {
+            "name": "TodoXpress.Api.Identity",
+            "type": "coreclr",
+            "request": "launch",
+            "program": "${workspaceFolder}/TodoXpress.Api.Identity/bin/Debug/net8.0/TodoXpress.Api.Identity.dll",
+            "preLaunchTask": "dotnet build",
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "launchSettingsProfile": "https",
+            "cwd": "${workspaceFolder}/TodoXpress.Api.Identity"
+        },
+        {
+            "name": "TodoXpress.Ui.Web",
+            "type": "coreclr",
+            "request": "launch",
+            "program": "${workspaceFolder}/TodoXpress.Ui.Web/bin/Debug/net8.0/TodoXpress.Ui.Web.dll",
+            "preLaunchTask": "dotnet build",
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "launchSettingsProfile": "https",
+            "cwd": "${workspaceFolder}/TodoXpress.Ui.Web"
+        },
+        {
+            "name": "TodoXpress.Ui.Native",
             "type": "maui",
             "request": "launch",
             "preLaunchTask": "maui: Build"
-        }
+        },
+    ],
+    "compounds": [
+        {
+            "name": "Web + Backend",
+            "configurations": [
+                "TodoXpress.Api.Data",
+                "TodoXpress.Api.Identity",
+                "TodoXpress.Ui.Web"
+            ]
+        },
+        {
+            "name": "Native + Backend",
+            "configurations": [
+                "TodoXpress.Api.Data",
+                "TodoXpress.Api.Identity",
+                "TodoXpress.Ui.Native"
+            ]
+        },
+        {
+            "name": "All",
+            "configurations": [
+                "TodoXpress.Api.Data",
+                "TodoXpress.Api.Identity",
+                "TodoXpress.Ui.Web",
+                "TodoXpress.Ui.Native"
+            ]
+        },
     ]
 }
