@@ -2,7 +2,7 @@
 using TodoXpress.Domain.Common.Contracts;
 using TodoXpress.Infastructure.Persistence.Contexts;
 
-namespace TodoXpress.Infastructure.Persistence.Services;
+namespace TodoXpress.Infastructure.Persistence.Services.Base;
 
 public abstract class DataServiceBase<T> where T : class, IIdentifieable
 {

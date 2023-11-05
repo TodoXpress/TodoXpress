@@ -21,5 +21,6 @@
     <Folder Include="CalendarDomain/SerialEvent/" />
     <Folder Include="Contracts/MediatR/" />
     <Folder Include="Contracts/Persistence/Common/" />
+    <Folder Include="Contracts/Persistence/Services/" />
   </ItemGroup>
 </Project>

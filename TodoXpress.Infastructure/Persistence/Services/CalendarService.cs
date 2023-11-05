@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TodoXpress.Application.Contracts.Persistence;
+using TodoXpress.Application.Contracts.Persistence.Services;
 using TodoXpress.Domain.Calendars;
 using TodoXpress.Infastructure.Persistence.Contexts;
-using TodoXpress.Infastructure.Persistence.Services;
+using TodoXpress.Infastructure.Persistence.Services.Base;
 
 namespace TodoXpress.Infastructure;
 

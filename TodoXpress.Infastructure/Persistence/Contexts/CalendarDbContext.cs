@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TodoXpress.Application.Contracts.Persistence;
 using TodoXpress.Domain.Calendars;
 
 namespace TodoXpress.Infastructure.Persistence.Contexts;
 
-public sealed class CalendarDbContext : DbContext
+public sealed class CalendarDbContext : DbContext, IDbContext
 {
     public DbSet<Calendar> Calendars { get; set; }
 
