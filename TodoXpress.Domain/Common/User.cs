@@ -1,4 +1,5 @@
-﻿
+﻿using System.ComponentModel.DataAnnotations;
+
 namespace TodoXpress.Domain.Common;
 
 /// <summary>
@@ -6,6 +7,7 @@ namespace TodoXpress.Domain.Common;
 /// </summary>
 public abstract class User : IIdentifieable
 {
+    [Key]
     /// <inheritdoc/>
     public Guid Id { get; set; }
 

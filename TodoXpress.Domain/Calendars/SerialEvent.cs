@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using TodoXpress.Domain.Calendars.Enumerations;
 
 namespace TodoXpress.Domain.Calendars;
@@ -7,6 +8,7 @@ namespace TodoXpress.Domain.Calendars;
 /// </summary>
 public class SerialEvent : IIdentifieable
 {
+    [Key]
     /// <inheritdoc/>
     public Guid Id { get; set; }
 
@@ -26,7 +28,7 @@ public class SerialEvent : IIdentifieable
     public Day MultiDaySerialEvent { get; set; }
 
     /// <summary>
-    /// The event in a calender that the series belongs to.
+    /// The events in a calender that the series belongs to.
     /// </summary>
-    public required CalendarEvent Event { get; set; }
+    public required List<CalendarEvent> Events { get; set; }
 }

@@ -45,12 +45,12 @@ public class CreateCalendarCommandHandler : IOneOfRequestHandler<CreateCalendarC
             Owner = request.User
         };
 
-        // save calendar
+        // create and save calendar
         var calendarId = await _calendarService.CreateAsync(calendar);
-        
-        if (Equals(calendarId, Guid.Empty))
+        bool saveSuccessfull = await _uow.SaveChangesAsync();
+
+        if (Equals(calendarId, Guid.Empty) || !saveSuccessfull)
         {
-            await _uow.SaveChangesAsync();
             return new PersistenceError<Calendar>();
         }
 

@@ -1,4 +1,5 @@
-﻿using TodoXpress.Domain.Common;
+﻿using System.ComponentModel.DataAnnotations;
+using TodoXpress.Domain.Common;
 
 namespace TodoXpress.Domain.Calendars;
 
@@ -7,6 +8,7 @@ namespace TodoXpress.Domain.Calendars;
 /// </summary>
 public sealed class Calendar : IIdentifieable
 {
+    [Key]
     /// <inheritdoc/>
     public Guid Id { get; set; }
 

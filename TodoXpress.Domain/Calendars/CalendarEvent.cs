@@ -1,4 +1,5 @@
-﻿using TodoXpress.Domain.Calendars.Enumerations;
+﻿using System.ComponentModel.DataAnnotations;
+using TodoXpress.Domain.Calendars.Enumerations;
 
 namespace TodoXpress.Domain.Calendars;
 
@@ -7,6 +8,7 @@ namespace TodoXpress.Domain.Calendars;
 /// </summary>
 public sealed class CalendarEvent : IIdentifieable
 {
+    [Key]
     /// <inheritdoc/>
     public Guid Id { get; set; }
 
@@ -78,7 +80,7 @@ public sealed class CalendarEvent : IIdentifieable
     /// <summary>
     /// Files than can be attached to an event.
     /// </summary>
-    public List<IAttachment> FileAttachments { get; set; } = [];
+    public List<FileAttachment> FileAttachments { get; set; } = [];
 
     // Todo:
     // - Internal Links

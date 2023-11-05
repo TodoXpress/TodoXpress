@@ -1,6 +1,7 @@
-﻿namespace TodoXpress.Domain.Common;
+﻿
+namespace TodoXpress.Domain.Common;
 
-public class Color
+public class Color : IIdentifieable
 {
     public Color()
     {
@@ -13,6 +14,8 @@ public class Color
         G = g;
         B = b;
     }
+
+    public Guid Id { get; set; }
 
     public int A { get; set; } = 0;
 
