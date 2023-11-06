@@ -4,6 +4,7 @@ using FluentValidation;
 using OneOf;
 using TodoXpress.Application.Contracts.MediatR;
 using TodoXpress.Application.Contracts.Persistence;
+using TodoXpress.Application.Contracts.Persistence.Common;
 using TodoXpress.Application.Contracts.Persistence.Services;
 using TodoXpress.Domain;
 using TodoXpress.Domain.Calendars;
@@ -13,13 +14,19 @@ namespace TodoXpress.Application.CalendarDomain.Calendars.Commands.CreateCalenda
 public class CreateCalendarCommandHandler : IOneOfRequestHandler<CreateCalendarCommand, Guid>
 {
     readonly IValidator<CreateCalendarCommand> _validator;
-    readonly ICalendarDataService _calendarService;
+    readonly ICreateableDataService<Calendar> _calendarService;
+    readonly IReadableDataService<User> _userService;
     readonly ICalendarUnitOfWork _uow;
 
-    public CreateCalendarCommandHandler(IValidator<CreateCalendarCommand> validator, ICalendarDataService calendarData, ICalendarUnitOfWork unitOfWork)
+    public CreateCalendarCommandHandler(
+        IValidator<CreateCalendarCommand> validator, 
+        ICalendarDataService calendarData,
+        ICalendarUserDataService userData,
+        ICalendarUnitOfWork unitOfWork)
     {
         _validator = validator;
         _calendarService = calendarData;
+        _userService = userData;
         _uow = unitOfWork;
     }
 
@@ -29,12 +36,15 @@ public class CreateCalendarCommandHandler : IOneOfRequestHandler<CreateCalendarC
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
 
         if (!validationResult.IsValid)
-        {
             return new ValidationError<ValidationResult>()
             {
                 ValidationErrorDescription = validationResult.ToString("|")
             };
-        }
+
+        // read user from database
+        var user = await _userService.ReadSingleAsync(request.UserId);
+        if (user is null)
+            return new ElementNotFoundError<User>();
 
         var rc = request.Color;
         var calendar = new Calendar()
@@ -42,7 +52,7 @@ public class CreateCalendarCommandHandler : IOneOfRequestHandler<CreateCalendarC
             Id = Guid.NewGuid(),
             Name = request.Name,
             Color = new(rc.R, rc.G, rc.B, rc.A),
-            Owner = request.User
+            Owner = user
         };
 
         // create and save calendar

@@ -8,7 +8,7 @@ public record class CreateCalendarCommand : IOneOfRequest<Guid>
 {
     public required string Name { get; set; }
 
-    public required User User { get; set; }
+    public required Guid UserId { get; set; }
 
     public ARGBColor Color { get; set; }
 }

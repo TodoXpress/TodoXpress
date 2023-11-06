@@ -37,7 +37,7 @@ public class CalendarModul : ICarterModule
         {
             Name = createRequest.Name,
             Color = createRequest.Color,
-            User = new()
+            UserId = Guid.NewGuid()
         };
 
         var result = await mediatR.Send(createCommand);

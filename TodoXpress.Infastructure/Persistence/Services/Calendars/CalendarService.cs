@@ -4,7 +4,7 @@ using TodoXpress.Domain.Calendars;
 using TodoXpress.Infastructure.Persistence.Contexts;
 using TodoXpress.Infastructure.Persistence.Services.Base;
 
-namespace TodoXpress.Infastructure;
+namespace TodoXpress.Infastructure.Persistence.Services.Calendars;
 
 public sealed class CalendarService(CalendarDbContext context) 
     : DataServiceBase<Calendar>(context), ICalendarDataService

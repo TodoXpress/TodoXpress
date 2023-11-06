@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using TodoXpress.Application.Contracts.Persistence;
 using TodoXpress.Application.Contracts.Persistence.Services;
+using TodoXpress.Application.Contracts.Persistence;
+using TodoXpress.Infastructure.Persistence.Services.Calendars;
 
 namespace TodoXpress.Infastructure;
 
@@ -15,6 +16,7 @@ public static class DependencyInjection
     {
         services.AddScoped<ICalendarUnitOfWork, CalendarUnitOfWork>();
         services.AddScoped<ICalendarDataService, CalendarService>();
+        services.AddScoped<ICalendarUserDataService, CalendarUserService>();
 
         return services;
     }
