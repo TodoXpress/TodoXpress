@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using TodoXpress.Domain.Common.ValueTypes;
 
-namespace TodoXpress.Infastructure;
+namespace TodoXpress.Infastructure.Validation.Common;
 
 public class ARGBColorValidator : AbstractValidator<ARGBColor>
 {

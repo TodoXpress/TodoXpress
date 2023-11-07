@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using FluentValidation;
-using TodoXpress.Infastructure;
 using TodoXpress.Infastructure.Persistence.Contexts;
+using TodoXpress.Infastructure.Validation.Calendar;
 
 namespace TodoXpress.Api.Data.DependencyInjection;
 
