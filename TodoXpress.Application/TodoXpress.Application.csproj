@@ -7,6 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="CalendarDomain\Events\**" />
+    <Compile Remove="CalendarDomain\SerialEvent\**" />
+    <EmbeddedResource Remove="CalendarDomain\Events\**" />
+    <EmbeddedResource Remove="CalendarDomain\SerialEvent\**" />
+    <None Remove="CalendarDomain\Events\**" />
+    <None Remove="CalendarDomain\SerialEvent\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\TodoXpress.Domain\TodoXpress.Domain.csproj" />
   </ItemGroup>
 
@@ -17,8 +26,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="CalendarDomain/Events/" />
-    <Folder Include="CalendarDomain/SerialEvent/" />
     <Folder Include="Contracts/MediatR/" />
     <Folder Include="Contracts/Persistence/Common/" />
   </ItemGroup>
