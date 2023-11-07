@@ -35,7 +35,7 @@ public sealed class CalendarService(CalendarDbContext context)
 
     public async Task<Guid> UpdateAsync(Calendar entity)
     {
-        var calendar = await ReadSingleAsync(entity.Id);
+        var calendar = await _set.FindAsync(entity.Id);
         if (calendar is null)
             return Guid.Empty;
 

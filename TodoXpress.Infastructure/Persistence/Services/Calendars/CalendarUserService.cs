@@ -24,7 +24,7 @@ public class CalendarUserService(CalendarDbContext context) : DataServiceBase<Us
 
     public async Task<Guid> UpdateAsync(User entity)
     {
-        var user = await ReadSingleAsync(entity.Id);
+        var user = await _set.FindAsync(entity.Id);
         if (user is null)
             return Guid.Empty;
 
