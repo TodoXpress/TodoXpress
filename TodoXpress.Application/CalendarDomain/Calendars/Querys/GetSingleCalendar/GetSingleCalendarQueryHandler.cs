@@ -9,7 +9,7 @@ using TodoXpress.Domain.Calendars;
 
 namespace TodoXpress.Application.CalendarDomain.Calendars.Querys.GetSingleCalendar;
 
-public class GetSingleCalendarQueryHandler : IOneOfRequestHandler<GetSingleCalendarQuery, Calendar>
+public class GetSingleCalendarQueryHandler : IOneOfRequestHandler<GetSingleCalendarQuery, GetSingleCalendarResponse>
 {
     IValidator<GetSingleCalendarQuery> _validator;
     IReadableDataService<Calendar> _calendarService;
@@ -20,7 +20,7 @@ public class GetSingleCalendarQueryHandler : IOneOfRequestHandler<GetSingleCalen
         _calendarService = calendarData;
     }
 
-    public async Task<OneOf<Calendar, IError>> Handle(GetSingleCalendarQuery request, CancellationToken cancellationToken)
+    public async Task<OneOf<GetSingleCalendarResponse, IError>> Handle(GetSingleCalendarQuery request, CancellationToken cancellationToken)
     {
         // validate request
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
@@ -36,6 +36,8 @@ public class GetSingleCalendarQueryHandler : IOneOfRequestHandler<GetSingleCalen
         if (calendar is null)
             return new ElementNotFoundError<Calendar>();
 
-        return calendar;
+        return new GetSingleCalendarResponse() {
+            Calendar = calendar
+        };
     }
 }
