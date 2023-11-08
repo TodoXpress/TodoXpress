@@ -27,7 +27,7 @@ public class CalendarModul : ICarterModule
             .WithDescription("Fetch a single calendar")
             .WithOpenApi();
 
-        group.MapGet("fromUser/{userId:Guid}", GetAllCalendarFromUser)
+        group.MapGet("user/{userId:Guid}", GetAllCalendarFromUser)
             .Produces<List<CalendarQueryDTO>>(StatusCodes.Status200OK)
             .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
             .WithDescription("Fetching all calendars from a user")
