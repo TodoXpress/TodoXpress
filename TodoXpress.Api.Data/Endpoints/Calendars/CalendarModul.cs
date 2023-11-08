@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Carter;
 using MediatR;
 using TodoXpress.Application.CalendarDomain.Calendars.Commands.CreateCalendar;
+using TodoXpress.Application.CalendarDomain.Calendars.Querys.GetAllFromUser;
 using TodoXpress.Domain.Calendars.DTO;
 using TodoXpress.Application;
 using TodoXpress.Domain;
@@ -17,13 +18,19 @@ public class CalendarModul : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/calendar")
+        var group = app.MapGroup("calendar")
             .WithDisplayName("Calendar operations");
 
         group.MapGet("/", GetSingleCalendar)
             .Produces<CalendarQueryDTO>(StatusCodes.Status200OK)
             .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
             .WithDescription("Fetch a single calendar")
+            .WithOpenApi();
+
+        group.MapGet("fromUser/{userId:Guid}", GetAllCalendarFromUser)
+            .Produces<List<CalendarQueryDTO>>(StatusCodes.Status200OK)
+            .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
+            .WithDescription("Fetching all calendars from a user")
             .WithOpenApi();
 
         group.MapPost("/", CreateCalendar)
@@ -58,6 +65,37 @@ public class CalendarModul : ICarterModule
                 EventIds = response.Calendar.Events.Select(e => e.Id).ToList()
             }),
             error => Results.BadRequest(ErrorResponse.Create(error)));
+    }
+
+    /// <summary>
+    /// Endpoint for fetching all calendars of a user.
+    /// </summary>
+    /// <param name="mediatR">DI of the mediatR sender.</param>
+    /// <param name="userId">The id of the user.</param>
+    /// <returns>A http result.</returns>
+    public async Task<IResult> GetAllCalendarFromUser([FromServices] ISender mediatR, Guid userId)
+    {
+        var fetchQuery = new GetAllCalendarFromUserQuery()
+        {
+             UserId = userId
+        };
+
+        var result = await mediatR.Send(fetchQuery);
+
+        return result
+            .Match(
+                response => Results.Ok(response.Calendars
+                .Select(calendar => {
+                    return new CalendarQueryDTO()
+                    {
+                        Id = calendar.Id,
+                        Name = calendar.Name,
+                        Color = calendar.Color,
+                        EventIds = calendar.Events.Select(e => e.Id).ToList()
+                    };
+                })
+                .ToList()),
+                error => Results.BadRequest(ErrorResponse.Create(error)));
     }
 
     /// <summary>
