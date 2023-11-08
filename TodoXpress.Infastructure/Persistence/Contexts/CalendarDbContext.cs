@@ -5,17 +5,20 @@ using Color = TodoXpress.Domain.Common.Color;
 
 namespace TodoXpress.Infastructure.Persistence.Contexts;
 
+/// <summary>
+/// The db context for the calendar domain.
+/// </summary>
 public sealed class CalendarDbContext : DbContext, IDbContext
 {
-    public DbSet<Calendar> Calendars { get; set; }
+    internal DbSet<Calendar> Calendars { get; set; }
 
-    public DbSet<CalendarEvent> Events { get; set; }
+    internal DbSet<CalendarEvent> Events { get; set; }
 
-    public DbSet<SerialEvent> SerialEvents { get; set; }
+    internal DbSet<SerialEvent> SerialEvents { get; set; }
 
-    public DbSet<FileAttachment> FileAttachments { get; set; }
+    internal DbSet<FileAttachment> FileAttachments { get; set; }
 
-    public DbSet<User> Users { get; set; }
+    internal DbSet<User> Users { get; set; }
 
     public CalendarDbContext(DbContextOptions<CalendarDbContext> options)
         : base(options)
