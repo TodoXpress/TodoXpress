@@ -2,6 +2,9 @@
 
 namespace TodoXpress.Domain;
 
+/// <summary>
+/// the datatransfer object for querying a calendar
+/// </summary>
 public class CalendarQueryDTO
 {
     public required Guid Id { get; set; }

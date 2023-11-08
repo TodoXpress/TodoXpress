@@ -1,8 +1,12 @@
 ﻿using FluentValidation;
 using TodoXpress.Application.CalendarDomain.Calendars.Commands.CreateCalendar;
+using TodoXpress.Infastructure.Validation.Common;
 
 namespace TodoXpress.Infastructure.Validation.Calendar;
 
+/// <summary>
+/// Validator for the <see cref="CreateCalendarCommand"/> class.
+/// </summary>
 public class CreateCalendarValidator : AbstractValidator<CreateCalendarCommand>
 {
     public CreateCalendarValidator()

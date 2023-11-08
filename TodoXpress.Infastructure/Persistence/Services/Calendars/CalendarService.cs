@@ -6,9 +6,14 @@ using TodoXpress.Infastructure.Persistence.Services.Base;
 
 namespace TodoXpress.Infastructure.Persistence.Services.Calendars;
 
+/// <summary>
+/// Implementation of the service to manage calendars on the persistence level.
+/// </summary>
+/// <param name="context">The <see cref="CalendarDbContext"/> for the entity framework.</param>
 public sealed class CalendarService(CalendarDbContext context) 
     : DataServiceBase<Calendar>(context), ICalendarDataService
 {
+    /// <inheritdoc/>
     public async Task<Calendar?> ReadSingleAsync(Guid id)
     {
         return await _set
@@ -16,6 +21,7 @@ public sealed class CalendarService(CalendarDbContext context)
             .FirstOrDefaultAsync(c => Equals(c.Id, id));
     }
 
+    /// <inheritdoc/>
     public async Task<List<Calendar>> ReadAllFromUserAsync(User user)
     {
         var calendars = await _set
@@ -26,6 +32,7 @@ public sealed class CalendarService(CalendarDbContext context)
         return calendars;
     }
 
+    /// <inheritdoc/>
     public async Task<Guid> CreateAsync(Calendar entity)
     {
         await _set.AddAsync(entity);
@@ -33,6 +40,7 @@ public sealed class CalendarService(CalendarDbContext context)
         return entity.Id;
     }
 
+    /// <inheritdoc/>
     public async Task<Guid> UpdateAsync(Calendar entity)
     {
         var calendar = await _set.FindAsync(entity.Id);
@@ -44,11 +52,13 @@ public sealed class CalendarService(CalendarDbContext context)
         return entity.Id;
     }
 
+    /// <inheritdoc/>
     public async Task<Guid> DeleteAsync(Calendar entity)
     {
         return await DeleteAsync(entity.Id);
     }
 
+    /// <inheritdoc/>
     public async Task<Guid> DeleteAsync(Guid id)
     {
         var calendar = await ReadSingleAsync(id);

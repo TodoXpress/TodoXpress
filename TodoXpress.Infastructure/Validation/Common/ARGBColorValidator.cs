@@ -3,6 +3,9 @@ using TodoXpress.Domain.Common.ValueTypes;
 
 namespace TodoXpress.Infastructure.Validation.Common;
 
+/// <summary>
+/// Validator for the <see cref="ARGBColor"/> class.
+/// </summary>
 public class ARGBColorValidator : AbstractValidator<ARGBColor>
 {
     public ARGBColorValidator()

@@ -5,14 +5,12 @@ using MediatR;
 using TodoXpress.Application.CalendarDomain.Calendars.Commands.CreateCalendar;
 using TodoXpress.Domain.Calendars.DTO;
 using TodoXpress.Application;
-using Microsoft.AspNetCore.Http.HttpResults;
-using TodoXpress.Application.CalendarDomain.Calendars.Querys.GetSingleCalendar;
 using TodoXpress.Domain;
 
 namespace TodoXpress.Api.Data;
 
 /// <summary>
-/// An API Endpoint with Carter module.
+/// An API Endpoint with Carter.
 /// </summary>
 /// <param name="mediatR">The MediatR instance for the application.</param>
 public class CalendarModul : ICarterModule
