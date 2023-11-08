@@ -18,6 +18,9 @@ public sealed class CalendarService(CalendarDbContext context)
     {
         return await _set
             .AsNoTracking()
+            .AsSplitQuery()
+            .Include(c => c.Events
+                .Select(e => e.Id))
             .FirstOrDefaultAsync(c => Equals(c.Id, id));
     }
 
@@ -26,6 +29,9 @@ public sealed class CalendarService(CalendarDbContext context)
     {
         var calendars = await _set
             .AsNoTracking()
+            .AsSplitQuery()
+            .Include(c => c.Events
+                .Select(e => e.Id))
             .Where(c => Equals(c.Owner.Id, user.Id))
             .ToListAsync();
         
