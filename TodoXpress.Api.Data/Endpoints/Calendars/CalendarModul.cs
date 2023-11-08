@@ -52,10 +52,10 @@ public class CalendarModul : ICarterModule
         return result.Match(
             response => Results.Ok(new CalendarQueryDTO()
             {
-                Id = response.Id,
-                Name = response.Name,
-                Color = response.Color,
-                EventIds = response.Events.Select(e => e.Id).ToList()
+                Id = response.Calendar.Id,
+                Name = response.Calendar.Name,
+                Color = response.Calendar.Color,
+                EventIds = response.Calendar.Events.Select(e => e.Id).ToList()
             }),
             error => Results.BadRequest(ErrorResponse.Create(error)));
     }
