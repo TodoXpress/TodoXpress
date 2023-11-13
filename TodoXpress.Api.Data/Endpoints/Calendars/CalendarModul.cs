@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Carter;
 using MediatR;
 using TodoXpress.Application.CalendarDomain.Calendars.Commands.CreateCalendar;
+using TodoXpress.Application.CalendarDomain.Calendars.Commands.UpdateCalendar;
 using TodoXpress.Application.CalendarDomain.Calendars.Querys.GetAllFromUser;
 using TodoXpress.Domain.Calendars.DTO;
 using TodoXpress.Application;
@@ -116,6 +117,27 @@ public class CalendarModul : ICarterModule
         var result = await mediatR.Send(createCommand);
 
         return result.Match(guid => Results.Created("/calendar", guid),
+            error => Results.BadRequest(ErrorResponse.Create(error)));
+    }
+
+    /// <summary>
+    /// Endpoint for update an existing calendar.
+    /// </summary>
+    /// <param name="mediatR">DI of the mediatR sender.</param>
+    /// <param name="updateRequest">The request for updating the calendar.</param>
+    /// <returns>A http results.</returns>
+    public async Task<IResult> UpdateCalendar([FromServices] ISender mediatR, [FromBody] UpdateCalendarDTO updateRequest)
+    {
+        var updateCommand = new UpdateCalendarCommand() 
+        {
+            CalendarId = updateRequest.CalendarId,
+            NewCalendarName = updateRequest.Name,
+            NewColor = updateRequest.Color
+        };
+
+        var result = await mediatR.Send(updateCommand);
+
+        return result.Match(response => Results.Ok(true),
             error => Results.BadRequest(ErrorResponse.Create(error)));
     }
 }

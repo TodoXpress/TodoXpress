@@ -1,5 +1,4 @@
 ﻿using TodoXpress.Application.Contracts.MediatR;
-using TodoXpress.Domain.Calendars;
 using TodoXpress.Domain.Common.ValueTypes;
 
 namespace TodoXpress.Application.CalendarDomain.Calendars.Commands.CreateCalendar;
