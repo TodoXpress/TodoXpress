@@ -47,15 +47,15 @@ public sealed class CalendarService(CalendarDbContext context)
     }
 
     /// <inheritdoc/>
-    public async Task<Guid> UpdateAsync(Calendar entity)
+    public async Task<Guid> UpdateAsync(Guid entityId, Calendar newEntity)
     {
-        var calendar = await _set.FindAsync(entity.Id);
+        var calendar = await _set.FindAsync(entityId);
         if (calendar is null)
             return Guid.Empty;
 
-        _set.Entry(calendar).CurrentValues.SetValues(entity);
+        _set.Entry(calendar).CurrentValues.SetValues(newEntity);
 
-        return entity.Id;
+        return entityId;
     }
 
     /// <inheritdoc/>

@@ -11,7 +11,8 @@ public interface IUpdateableDataService<T> where T : IIdentifieable
     /// <summary>
     /// Updates an <see cref="typeof(T)"/> in the persistence.
     /// </summary>
-    /// <param name="entity">The entity to update.</param>
+    /// <param name="entityId">The id of the entity to update.</param>
+    /// <param name="newEntity">The entity with new values.</param>
     /// <returns>The id of the entity.</returns>
-    Task<Guid> UpdateAsync(T entity);
+    Task<Guid> UpdateAsync(Guid entityId, T newEntity);
 }

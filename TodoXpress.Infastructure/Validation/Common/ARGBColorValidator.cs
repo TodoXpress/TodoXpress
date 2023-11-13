@@ -20,3 +20,14 @@ public class ARGBColorValidator : AbstractValidator<ARGBColor>
             .WithMessage("Invalid value for blue");
     }
 }
+
+public class NullableARGBColorValidator : AbstractValidator<ARGBColor?>
+{
+    public NullableARGBColorValidator()
+    {
+        When(x => x is not null, () => {
+            RuleFor(x => x!.Value)
+                .SetValidator(new ARGBColorValidator());
+        });
+    }
+}

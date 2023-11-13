@@ -29,15 +29,15 @@ public class CalendarUserService(CalendarDbContext context) : DataServiceBase<Us
     }
 
     /// <inheritdoc/>
-    public async Task<Guid> UpdateAsync(User entity)
+    public async Task<Guid> UpdateAsync(Guid entityId, User newEntity)
     {
-        var user = await _set.FindAsync(entity.Id);
+        var user = await _set.FindAsync(entityId);
         if (user is null)
             return Guid.Empty;
 
-        _set.Entry(user).CurrentValues.SetValues(entity);
+        _set.Entry(user).CurrentValues.SetValues(newEntity);
         
-        return entity.Id;
+        return entityId;
     }
 
     /// <inheritdoc/>
