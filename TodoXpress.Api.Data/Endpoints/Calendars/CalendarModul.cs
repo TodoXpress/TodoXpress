@@ -2,11 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Carter;
 using MediatR;
+using TodoXpress.Application;
 using TodoXpress.Application.CalendarDomain.Calendars.Commands.CreateCalendar;
 using TodoXpress.Application.CalendarDomain.Calendars.Commands.UpdateCalendar;
 using TodoXpress.Application.CalendarDomain.Calendars.Querys.GetAllFromUser;
 using TodoXpress.Domain.Calendars.DTO;
-using TodoXpress.Application;
 using TodoXpress.Domain;
 
 namespace TodoXpress.Api.Data;
@@ -34,11 +34,18 @@ public class CalendarModul : ICarterModule
             .WithDescription("Fetching all calendars from a user")
             .WithOpenApi();
 
-        group.MapPost("/", CreateCalendar)
+        group.MapPut("/", CreateCalendar)
             .Accepts<CreateCalendarDTO>(Media.Application.Json)
             .Produces<Guid>(StatusCodes.Status201Created)
             .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
             .WithDescription("Creates a new calendar.")
+            .WithOpenApi();
+
+        group.MapPost("/", UpdateCalendar)
+            .Accepts<UpdateCalendarDTO>(Media.Application.Json)
+            .Produces<bool>(StatusCodes.Status200OK)
+            .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
+            .WithDescription("Updates the values of an existing calendar")
             .WithOpenApi();
     }
 
