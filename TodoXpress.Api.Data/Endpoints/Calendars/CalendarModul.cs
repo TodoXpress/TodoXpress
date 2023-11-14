@@ -19,29 +19,29 @@ public class CalendarModul : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("calendar")
+        var group = app.MapGroup("calendars")
             .WithDisplayName("Calendar operations");
 
-        group.MapGet("/", GetSingleCalendar)
+        group.MapGet("calendar", GetSingleCalendar)
             .Produces<CalendarQueryDTO>(StatusCodes.Status200OK)
             .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
             .WithDescription("Fetch a single calendar")
             .WithOpenApi();
 
-        group.MapGet("user/{userId:Guid}", GetAllCalendarFromUser)
+        group.MapGet("user/{userId:Guid}/calendars/", GetAllCalendarFromUser)
             .Produces<List<CalendarQueryDTO>>(StatusCodes.Status200OK)
             .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
             .WithDescription("Fetching all calendars from a user")
             .WithOpenApi();
 
-        group.MapPut("/", CreateCalendar)
+        group.MapPut("calendar", CreateCalendar)
             .Accepts<CreateCalendarDTO>(Media.Application.Json)
             .Produces<Guid>(StatusCodes.Status201Created)
             .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
             .WithDescription("Creates a new calendar.")
             .WithOpenApi();
 
-        group.MapPost("/", UpdateCalendar)
+        group.MapPost("calendar", UpdateCalendar)
             .Accepts<UpdateCalendarDTO>(Media.Application.Json)
             .Produces<bool>(StatusCodes.Status200OK)
             .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
