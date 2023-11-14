@@ -7,6 +7,7 @@ using TodoXpress.Application.CalendarDomain.Calendars.Commands.CreateCalendar;
 using TodoXpress.Application.CalendarDomain.Calendars.Commands.UpdateCalendar;
 using TodoXpress.Application.CalendarDomain.Calendars.Querys.GetAllFromUser;
 using TodoXpress.Domain.Calendars.DTO.Calendars;
+using TodoXpress.Application.CalendarDomain.Calendars.Commands.DeleteCalendar;
 
 namespace TodoXpress.Api.Data;
 
@@ -150,7 +151,27 @@ public class CalendarModul : ICarterModule
 
         var result = await mediatR.Send(updateCommand);
 
-        return result.Match(response => Results.Ok(),
+        return result.Match(
+            response => response.Successful ? Results.Ok() 
+                        : Results.Problem(response.CalendarGuid.ToString(), statusCode: 500),
             error => Results.BadRequest(ErrorResponse.Create(error)));
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="mediatR">DI of the mediatR sender.</param>
+    /// <param name="deleteRequest">the request for deleting the calendar.</param>
+    /// <returns></returns>
+    public async Task<IResult> DeleteCalendar([FromServices] ISender mediatR, DeleteCalendarRequestDTO deleteRequest)
+    {
+        var deleteCommand = new DeleteCalendarCommand()
+        {
+            CalendarId = deleteRequest.CalendarId
+        };
+
+        var result = await mediatR.Send(deleteCommand);
+
+        return Results.Ok();
     }
 }
