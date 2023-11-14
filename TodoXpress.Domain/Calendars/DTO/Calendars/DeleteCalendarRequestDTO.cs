@@ -1,8 +1,6 @@
 ﻿namespace TodoXpress.Domain.Calendars.DTO.Calendars;
 
-public record struct UpdateCalendarResponseDTO
+public record struct DeleteCalendarRequestDTO
 {
     public Guid CalendarId { get; set; }
-
-    public bool Success { get; set; }
 }

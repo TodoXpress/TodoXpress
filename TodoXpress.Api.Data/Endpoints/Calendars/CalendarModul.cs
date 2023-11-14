@@ -37,16 +37,23 @@ public class CalendarModul : ICarterModule
 
         group.MapPut(CALENDAR, CreateCalendar)
             .Accepts<CreateCalendarRequestDTO>(Media.Application.Json)
-            .Produces<CreateCalendarResponseDTO>(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status201Created)
             .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
             .WithDescription("Creates a new calendar.")
             .WithOpenApi();
 
         group.MapPost(CALENDAR, UpdateCalendar)
             .Accepts<UpdateCalendarRequestDTO>(Media.Application.Json)
-            .Produces<UpdateCalendarResponseDTO>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status200OK)
             .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
             .WithDescription("Updates the values of an existing calendar")
+            .WithOpenApi();
+
+        group.MapDelete(CALENDAR, () => { })
+            .Accepts<DeleteCalendarRequestDTO>(Media.Application.Json)
+            .Produces(StatusCodes.Status200OK)
+            .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
+            .WithDescription("Deletes an existing calendar")
             .WithOpenApi();
     }
 
@@ -124,11 +131,7 @@ public class CalendarModul : ICarterModule
 
         var result = await mediatR.Send(createCommand);
 
-        return result.Match(guid => Results.Created("/calendar", 
-            new CreateCalendarResponseDTO()
-            {
-                CalendarId = guid,
-            }),
+        return result.Match(guid => Results.Created(),
             error => Results.BadRequest(ErrorResponse.Create(error)));
     }
 
@@ -149,11 +152,7 @@ public class CalendarModul : ICarterModule
 
         var result = await mediatR.Send(updateCommand);
 
-        return result.Match(response => Results.Ok(new UpdateCalendarResponseDTO()
-        {
-            CalendarId = response.CalendarGuid,
-            Success = response.Successful,
-        }),
+        return result.Match(response => Results.Ok(),
             error => Results.BadRequest(ErrorResponse.Create(error)));
     }
 }
