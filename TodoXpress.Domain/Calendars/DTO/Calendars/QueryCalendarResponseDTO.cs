@@ -1,11 +1,11 @@
 ﻿using TodoXpress.Domain.Common;
 
-namespace TodoXpress.Domain;
+namespace TodoXpress.Domain.Calendars.DTO.Calendars;
 
 /// <summary>
 /// the datatransfer object for querying a calendar
 /// </summary>
-public class CalendarQueryDTO
+public record QueryCalendarResponseDTO
 {
     public required Guid Id { get; set; }
 

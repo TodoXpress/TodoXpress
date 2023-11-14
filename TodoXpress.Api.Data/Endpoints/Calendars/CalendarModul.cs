@@ -6,8 +6,7 @@ using TodoXpress.Application;
 using TodoXpress.Application.CalendarDomain.Calendars.Commands.CreateCalendar;
 using TodoXpress.Application.CalendarDomain.Calendars.Commands.UpdateCalendar;
 using TodoXpress.Application.CalendarDomain.Calendars.Querys.GetAllFromUser;
-using TodoXpress.Domain.Calendars.DTO;
-using TodoXpress.Domain;
+using TodoXpress.Domain.Calendars.DTO.Calendars;
 
 namespace TodoXpress.Api.Data;
 
@@ -17,33 +16,35 @@ namespace TodoXpress.Api.Data;
 /// <param name="mediatR">The MediatR instance for the application.</param>
 public class CalendarModul : ICarterModule
 {
+    private static readonly string CALENDAR = "calendar";
+
     public void AddRoutes(IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("calendars")
             .WithDisplayName("Calendar operations");
 
-        group.MapGet("calendar", GetSingleCalendar)
-            .Produces<CalendarQueryDTO>(StatusCodes.Status200OK)
+        group.MapGet(CALENDAR, GetSingleCalendar)
+            .Produces<QueryCalendarResponseDTO>(StatusCodes.Status200OK)
             .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
             .WithDescription("Fetch a single calendar")
             .WithOpenApi();
 
         group.MapGet("user/{userId:Guid}/calendars/", GetAllCalendarFromUser)
-            .Produces<List<CalendarQueryDTO>>(StatusCodes.Status200OK)
+            .Produces<List<QueryCalendarResponseDTO>>(StatusCodes.Status200OK)
             .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
             .WithDescription("Fetching all calendars from a user")
             .WithOpenApi();
 
-        group.MapPut("calendar", CreateCalendar)
-            .Accepts<CreateCalendarDTO>(Media.Application.Json)
-            .Produces<Guid>(StatusCodes.Status201Created)
+        group.MapPut(CALENDAR, CreateCalendar)
+            .Accepts<CreateCalendarRequestDTO>(Media.Application.Json)
+            .Produces<CreateCalendarResponseDTO>(StatusCodes.Status201Created)
             .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
             .WithDescription("Creates a new calendar.")
             .WithOpenApi();
 
-        group.MapPost("calendar", UpdateCalendar)
-            .Accepts<UpdateCalendarDTO>(Media.Application.Json)
-            .Produces<bool>(StatusCodes.Status200OK)
+        group.MapPost(CALENDAR, UpdateCalendar)
+            .Accepts<UpdateCalendarRequestDTO>(Media.Application.Json)
+            .Produces<UpdateCalendarResponseDTO>(StatusCodes.Status200OK)
             .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
             .WithDescription("Updates the values of an existing calendar")
             .WithOpenApi();
@@ -65,7 +66,7 @@ public class CalendarModul : ICarterModule
         var result = await mediatR.Send(fetchQuery);
 
         return result.Match(
-            response => Results.Ok(new CalendarQueryDTO()
+            response => Results.Ok(new QueryCalendarResponseDTO()
             {
                 Id = response.Calendar.Id,
                 Name = response.Calendar.Name,
@@ -94,7 +95,7 @@ public class CalendarModul : ICarterModule
             .Match(
                 response => Results.Ok(response.Calendars
                 .Select(calendar => {
-                    return new CalendarQueryDTO()
+                    return new QueryCalendarResponseDTO()
                     {
                         Id = calendar.Id,
                         Name = calendar.Name,
@@ -112,7 +113,7 @@ public class CalendarModul : ICarterModule
     /// <param name="mediatR">DI of the mediatR sender.</param>
     /// <param name="createRequest">The request for creating the calendar.</param>
     /// <returns>A http result.</returns>
-    public async Task<IResult> CreateCalendar([FromServices] ISender mediatR, [FromBody]CreateCalendarDTO createRequest)
+    public async Task<IResult> CreateCalendar([FromServices] ISender mediatR, [FromBody]CreateCalendarRequestDTO createRequest)
     {
         var createCommand = new CreateCalendarCommand()
         {
@@ -123,7 +124,11 @@ public class CalendarModul : ICarterModule
 
         var result = await mediatR.Send(createCommand);
 
-        return result.Match(guid => Results.Created("/calendar", guid),
+        return result.Match(guid => Results.Created("/calendar", 
+            new CreateCalendarResponseDTO()
+            {
+                CalendarId = guid,
+            }),
             error => Results.BadRequest(ErrorResponse.Create(error)));
     }
 
@@ -133,7 +138,7 @@ public class CalendarModul : ICarterModule
     /// <param name="mediatR">DI of the mediatR sender.</param>
     /// <param name="updateRequest">The request for updating the calendar.</param>
     /// <returns>A http results.</returns>
-    public async Task<IResult> UpdateCalendar([FromServices] ISender mediatR, [FromBody] UpdateCalendarDTO updateRequest)
+    public async Task<IResult> UpdateCalendar([FromServices] ISender mediatR, [FromBody] UpdateCalendarRequestDTO updateRequest)
     {
         var updateCommand = new UpdateCalendarCommand() 
         {
@@ -144,7 +149,11 @@ public class CalendarModul : ICarterModule
 
         var result = await mediatR.Send(updateCommand);
 
-        return result.Match(response => Results.Ok(true),
+        return result.Match(response => Results.Ok(new UpdateCalendarResponseDTO()
+        {
+            CalendarId = response.CalendarGuid,
+            Success = response.Successful,
+        }),
             error => Results.BadRequest(ErrorResponse.Create(error)));
     }
 }

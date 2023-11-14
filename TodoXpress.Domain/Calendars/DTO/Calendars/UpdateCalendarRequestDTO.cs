@@ -1,11 +1,11 @@
 ﻿using TodoXpress.Domain.Common.ValueTypes;
 
-namespace TodoXpress.Domain;
+namespace TodoXpress.Domain.Calendars.DTO.Calendars;
 
 /// <summary>
 /// Represents the datatransfer object for updating a calendar.
 /// </summary>
-public record struct UpdateCalendarDTO
+public record struct UpdateCalendarRequestDTO
 {
     public Guid CalendarId { get; set; }
 
