@@ -16,14 +16,12 @@ namespace TodoXpress.Api.Data;
 /// <param name="mediatR">The MediatR instance for the application.</param>
 public class CalendarModul : ICarterModule
 {
-    private static readonly string CALENDAR = "calendar";
-
     public void AddRoutes(IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("calendars")
             .WithDisplayName("Calendar operations");
 
-        group.MapGet(CALENDAR, GetSingleCalendar)
+        group.MapGet("calendar/{calendarId:Guid}", GetSingleCalendar)
             .Produces<QueryCalendarResponseDTO>(StatusCodes.Status200OK)
             .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
             .WithDescription("Fetch a single calendar")
@@ -35,21 +33,21 @@ public class CalendarModul : ICarterModule
             .WithDescription("Fetching all calendars from a user")
             .WithOpenApi();
 
-        group.MapPut(CALENDAR, CreateCalendar)
+        group.MapPut("calendar", CreateCalendar)
             .Accepts<CreateCalendarRequestDTO>(Media.Application.Json)
             .Produces(StatusCodes.Status201Created)
             .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
             .WithDescription("Creates a new calendar.")
             .WithOpenApi();
 
-        group.MapPost(CALENDAR, UpdateCalendar)
+        group.MapPost("calendar", UpdateCalendar)
             .Accepts<UpdateCalendarRequestDTO>(Media.Application.Json)
             .Produces(StatusCodes.Status200OK)
             .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
             .WithDescription("Updates the values of an existing calendar")
             .WithOpenApi();
 
-        group.MapDelete(CALENDAR, () => { })
+        group.MapDelete("calendar", () => { })
             .Accepts<DeleteCalendarRequestDTO>(Media.Application.Json)
             .Produces(StatusCodes.Status200OK)
             .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
