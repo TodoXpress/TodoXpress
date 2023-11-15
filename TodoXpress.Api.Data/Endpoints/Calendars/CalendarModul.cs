@@ -14,7 +14,6 @@ namespace TodoXpress.Api.Data;
 /// <summary>
 /// An API Endpoint with Carter.
 /// </summary>
-/// <param name="mediatR">The MediatR instance for the application.</param>
 public class CalendarModul : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
@@ -139,7 +138,7 @@ public class CalendarModul : ICarterModule
     /// </summary>
     /// <param name="mediatR">DI of the mediatR sender.</param>
     /// <param name="updateRequest">The request for updating the calendar.</param>
-    /// <returns>A http results.</returns>
+    /// <returns>A http result.</returns>
     public async Task<IResult> UpdateCalendar([FromServices] ISender mediatR, [FromBody] UpdateCalendarRequestDTO updateRequest)
     {
         var updateCommand = new UpdateCalendarCommand() 
@@ -162,7 +161,7 @@ public class CalendarModul : ICarterModule
     /// </summary>
     /// <param name="mediatR">DI of the mediatR sender.</param>
     /// <param name="deleteRequest">the request for deleting the calendar.</param>
-    /// <returns></returns>
+    /// <returns>A http result.</returns>
     public async Task<IResult> DeleteCalendar([FromServices] ISender mediatR, [FromBody] DeleteCalendarRequestDTO deleteRequest)
     {
         var deleteCommand = new DeleteCalendarCommand()

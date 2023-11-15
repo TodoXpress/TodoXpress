@@ -7,7 +7,7 @@ var config = builder.Configuration;
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwagger();
 
 // add application layer
 builder.Services
@@ -20,13 +20,9 @@ builder.Services
     .AddDataServices()
     .AddFluentValidation();
 
-var app = builder.Build();
+WebApplication app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwaggerInDev();
 
 app.UseHttpsRedirection();
 
