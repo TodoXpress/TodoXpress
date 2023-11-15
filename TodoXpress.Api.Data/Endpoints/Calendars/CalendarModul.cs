@@ -157,7 +157,7 @@ public class CalendarModul : ICarterModule
     }
 
     /// <summary>
-    /// 
+    /// Endpoint for deleting an existing calendar.
     /// </summary>
     /// <param name="mediatR">DI of the mediatR sender.</param>
     /// <param name="deleteRequest">the request for deleting the calendar.</param>
