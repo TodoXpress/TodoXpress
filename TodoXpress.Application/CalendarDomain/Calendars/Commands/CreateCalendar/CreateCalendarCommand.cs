@@ -3,7 +3,7 @@ using TodoXpress.Domain.Common.ValueTypes;
 
 namespace TodoXpress.Application.CalendarDomain.Calendars.Commands.CreateCalendar;
 
-public record class CreateCalendarCommand : IOneOfRequest<Guid>
+public record class CreateCalendarCommand : IOneOfRequest<CreateCalendarResponse>
 {
     public required string Name { get; set; }
 

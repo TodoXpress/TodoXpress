@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Drawing;
 using FluentValidation;
 using OneOf;
 using TodoXpress.Application.Contracts.MediatR;
@@ -11,7 +10,7 @@ using TodoXpress.Domain.Calendars;
 
 namespace TodoXpress.Application.CalendarDomain.Calendars.Commands.CreateCalendar;
 
-public class CreateCalendarCommandHandler : IOneOfRequestHandler<CreateCalendarCommand, Guid>
+public class CreateCalendarCommandHandler : IOneOfRequestHandler<CreateCalendarCommand, CreateCalendarResponse>
 {
     readonly IValidator<CreateCalendarCommand> _validator;
     readonly ICreateableDataService<Calendar> _calendarService;
@@ -30,7 +29,7 @@ public class CreateCalendarCommandHandler : IOneOfRequestHandler<CreateCalendarC
         _uow = unitOfWork;
     }
 
-    public async Task<OneOf<Guid, IError>> Handle(CreateCalendarCommand request, CancellationToken cancellationToken)
+    public async Task<OneOf<CreateCalendarResponse, IError>> Handle(CreateCalendarCommand request, CancellationToken cancellationToken)
     {
         // validate request
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
@@ -64,7 +63,11 @@ public class CreateCalendarCommandHandler : IOneOfRequestHandler<CreateCalendarC
             return new PersistenceError<Calendar>();
         }
 
-        return calendarId;
+        return new CreateCalendarResponse()
+        {
+            CalendarId = calendarId,
+            Successful = true
+        };
     }
 
 }
