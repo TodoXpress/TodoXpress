@@ -48,7 +48,7 @@ public class CalendarModul : ICarterModule
             .WithDescription("Updates the values of an existing calendar")
             .WithOpenApi();
 
-        group.MapDelete("calendar", () => { })
+        group.MapDelete("calendar", DeleteCalendar)
             .Accepts<DeleteCalendarRequestDTO>(Media.Application.Json)
             .Produces(StatusCodes.Status200OK)
             .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)

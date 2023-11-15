@@ -4,6 +4,9 @@ using TodoXpress.Infastructure.Validation.Common;
 
 namespace TodoXpress.Infastructure.Validation.Calendar;
 
+/// <summary>
+/// Validator for the <see cref="UpdateCalendarCommand"/> class.
+/// </summary>
 public class UpdateCalendarValidator : AbstractValidator<UpdateCalendarCommand>
 {
     /// <summary>

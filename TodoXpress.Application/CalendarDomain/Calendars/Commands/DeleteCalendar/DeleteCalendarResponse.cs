@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace TodoXpress.Application.CalendarDomain.Calendars.Commands.DeleteCalendar;
 
-namespace TodoXpress.Application.CalendarDomain.Calendars.Commands.DeleteCalendar
+public class DeleteCalendarResponse
 {
-    internal class DeleteCalendarResponse
-    {
-    }
+    public Guid CalendarId { get; set; }
+
+    public bool Successful { get; set; }
 }
