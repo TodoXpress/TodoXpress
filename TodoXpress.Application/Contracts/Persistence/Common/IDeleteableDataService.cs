@@ -12,13 +12,13 @@ public interface IDeleteableDataService<T> where T : IIdentifieable
     /// Deletes an <see cref="typeof(T)"/> in the persistence.
     /// </summary>
     /// <param name="entity">The entity to delete.</param>
-    /// <returns>The id of the entity.</returns>
-    Task<Guid> DeleteAsync(T entity);
+    /// <returns><see langword="true"/> if the operation was successful, otherwise <see langword="false"/>.</returns>
+    Task<bool> DeleteAsync(T entity);
 
     /// <summary>
     /// Deletes an <see cref="typeof(T)"/> in the persistence.
     /// </summary>
     /// <param name="entity">The id of the entity to delete.</param>
-    /// <returns>The id of the entity.</returns>
-    Task<Guid> DeleteAsync(Guid id);
+    /// <returns><see langword="true"/> if the operation was successful, otherwise <see langword="false"/>.</returns>
+    Task<bool> DeleteAsync(Guid id);
 }

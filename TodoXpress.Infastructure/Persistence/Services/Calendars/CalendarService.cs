@@ -46,32 +46,33 @@ public sealed class CalendarService(CalendarDbContext context)
     }
 
     /// <inheritdoc/>
-    public async Task<Guid> UpdateAsync(Guid entityId, Calendar newEntity)
+    public async Task<bool> UpdateAsync(Guid entityId, Calendar newEntity)
     {
         var calendar = await _set.FindAsync(entityId);
         if (calendar is null)
-            return Guid.Empty;
+            return false;
 
         _set.Entry(calendar).CurrentValues.SetValues(newEntity);
+        var entity = _set.Update(calendar);
 
-        return entityId;
+        return Equals(entity.State, EntityState.Deleted);
     }
 
     /// <inheritdoc/>
-    public async Task<Guid> DeleteAsync(Calendar entity)
+    public async Task<bool> DeleteAsync(Calendar entity)
     {
         return await DeleteAsync(entity.Id);
     }
 
     /// <inheritdoc/>
-    public async Task<Guid> DeleteAsync(Guid id)
+    public async Task<bool> DeleteAsync(Guid id)
     {
         var calendar = await ReadSingleAsync(id);
         if (calendar is null)
-            return Guid.Empty;
+            return false;
 
-        _set.Remove(calendar);
+        var entity = _set.Remove(calendar);
 
-        return calendar.Id;
+        return Equals(entity.State, EntityState.Deleted);
     }
 }

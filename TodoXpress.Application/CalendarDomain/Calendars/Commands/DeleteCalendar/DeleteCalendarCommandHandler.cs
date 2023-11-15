@@ -37,9 +37,10 @@ public class DeleteCalendarCommandHandler : IOneOfRequestHandler<DeleteCalendarC
             };
         }
 
-        _ = await calendarService.DeleteAsync(request.CalendarId);
-
-        var success = await uow.SaveChangesAsync();
+        var success = await calendarService.DeleteAsync(request.CalendarId);
+        
+        if (success)
+            success = success && await uow.SaveChangesAsync();
 
         return new DeleteCalendarResponse()
         {

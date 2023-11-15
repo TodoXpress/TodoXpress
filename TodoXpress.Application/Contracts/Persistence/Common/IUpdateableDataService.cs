@@ -13,6 +13,6 @@ public interface IUpdateableDataService<T> where T : IIdentifieable
     /// </summary>
     /// <param name="entityId">The id of the entity to update.</param>
     /// <param name="newEntity">The entity with new values.</param>
-    /// <returns>The id of the entity.</returns>
-    Task<Guid> UpdateAsync(Guid entityId, T newEntity);
+    /// <returns><see langword="true"/> if the operation was successful, otherwise <see langword="false"/>.</returns>
+    Task<bool> UpdateAsync(Guid entityId, T newEntity);
 }

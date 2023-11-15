@@ -54,15 +54,15 @@ public class UpdateCalendarCommandHandler : IOneOfRequestHandler<UpdateCalendarC
 
         calendar.UpdateWith(request.NewCalendarName, request.NewColor is not null ? newColor : null);
 
-        var calendarId = await calendarService.UpdateAsync(request.CalendarId, calendar);
-
-        // persist
-        var success = await uow.SaveChangesAsync();
+        var success = await calendarService.UpdateAsync(request.CalendarId, calendar);
+        
+        if (success)
+            success = success && await uow.SaveChangesAsync();
 
         //response
         return new UpdateCalendarResponse()
         {
-            CalendarGuid = calendarId,
+            CalendarGuid = request.CalendarId,
             Successful = success
         };
     }
