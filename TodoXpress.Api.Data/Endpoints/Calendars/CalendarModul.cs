@@ -119,7 +119,7 @@ public class CalendarModul : ICarterModule
     /// <param name="mediatR">DI of the mediatR sender.</param>
     /// <param name="createRequest">The request for creating the calendar.</param>
     /// <returns>A http result.</returns>
-    public async Task<IResult> CreateCalendar([FromServices] ISender mediatR, [FromBody]CreateCalendarRequestDTO createRequest)
+    public async Task<IResult> CreateCalendar([FromServices] ISender mediatR, [FromBody] CreateCalendarRequestDTO createRequest)
     {
         var createCommand = new CreateCalendarCommand()
         {
@@ -163,7 +163,7 @@ public class CalendarModul : ICarterModule
     /// <param name="mediatR">DI of the mediatR sender.</param>
     /// <param name="deleteRequest">the request for deleting the calendar.</param>
     /// <returns></returns>
-    public async Task<IResult> DeleteCalendar([FromServices] ISender mediatR, DeleteCalendarRequestDTO deleteRequest)
+    public async Task<IResult> DeleteCalendar([FromServices] ISender mediatR, [FromBody] DeleteCalendarRequestDTO deleteRequest)
     {
         var deleteCommand = new DeleteCalendarCommand()
         {
