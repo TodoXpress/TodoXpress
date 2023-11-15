@@ -172,6 +172,9 @@ public class CalendarModul : ICarterModule
 
         var result = await mediatR.Send(deleteCommand);
 
-        return Results.Ok();
+        return result.Match(
+            response => response.Successful ? Results.Ok() 
+                        : Results.Problem(response.CalendarId.ToString(), statusCode: 500),
+            error => Results.BadRequest(ErrorResponse.Create(error)));
     }
 }
