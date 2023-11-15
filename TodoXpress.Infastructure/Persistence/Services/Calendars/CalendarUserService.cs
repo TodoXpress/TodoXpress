@@ -29,32 +29,33 @@ public class CalendarUserService(CalendarDbContext context) : DataServiceBase<Us
     }
 
     /// <inheritdoc/>
-    public async Task<Guid> UpdateAsync(Guid entityId, User newEntity)
+    public async Task<bool> UpdateAsync(Guid entityId, User newEntity)
     {
         var user = await _set.FindAsync(entityId);
         if (user is null)
-            return Guid.Empty;
+            return false;
 
         _set.Entry(user).CurrentValues.SetValues(newEntity);
-        
-        return entityId;
+        var entity = _set.Update(user);
+
+        return Equals(entity.State, EntityState.Modified);
     }
 
     /// <inheritdoc/>
-    public async Task<Guid> DeleteAsync(User entity)
+    public async Task<bool> DeleteAsync(User entity)
     {
         return await DeleteAsync(entity.Id);
     }
 
     /// <inheritdoc/>
-    public async Task<Guid> DeleteAsync(Guid id)
+    public async Task<bool> DeleteAsync(Guid id)
     {
         var user = await ReadSingleAsync(id);
         if (user is null)
-            return Guid.Empty;
+            return false;
 
-        _set.Remove(user);
+        var entity = _set.Remove(user);
 
-        return user.Id;
+        return Equals(entity.State, EntityState.Deleted);
     }
 }

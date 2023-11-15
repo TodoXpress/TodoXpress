@@ -55,7 +55,7 @@ public sealed class CalendarService(CalendarDbContext context)
         _set.Entry(calendar).CurrentValues.SetValues(newEntity);
         var entity = _set.Update(calendar);
 
-        return Equals(entity.State, EntityState.Deleted);
+        return Equals(entity.State, EntityState.Modified);
     }
 
     /// <inheritdoc/>
