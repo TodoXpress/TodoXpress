@@ -19,8 +19,8 @@ public sealed class CalendarService(CalendarDbContext context)
         return await _set
             .AsNoTracking()
             .AsSplitQuery()
-            .Include(c => c.Events
-                .Select(e => e.Id))
+            .Include(c => c.Owner)
+            .Include(c => c.Color)
             .FirstOrDefaultAsync(c => Equals(c.Id, id));
     }
 
@@ -30,8 +30,7 @@ public sealed class CalendarService(CalendarDbContext context)
         var calendars = await _set
             .AsNoTracking()
             .AsSplitQuery()
-            .Include(c => c.Events
-                .Select(e => e.Id))
+            .Include(c => c.Events)
             .Where(c => Equals(c.Owner.Id, user.Id))
             .ToListAsync();
         
