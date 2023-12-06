@@ -2,7 +2,7 @@
 
 namespace TodoXpress.Api.Identity.Entities;
 
-public class User : IdentityUser
+internal class User : IdentityUser<Guid>
 {
-    
+    public List<Role> Roles { get; set; } = [];
 }

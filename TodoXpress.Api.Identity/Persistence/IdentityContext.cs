@@ -4,10 +4,20 @@ using TodoXpress.Api.Identity.Entities;
 
 namespace TodoXpress.Api.Identity.Persistence;
 
-public class IdentityContext : IdentityDbContext<User>
+internal class IdentityContext : IdentityDbContext<User, Role, Guid>
 {
+    internal DbSet<Permission> Permissions { get; set; }
+
+    internal DbSet<Ressource> Ressources { get; set; }
+
+    internal DbSet<Scope> Scopes { get; set; }
+
     public IdentityContext(DbContextOptions<IdentityContext> options) 
         : base(options)
     {
+        if (this.Database.GetPendingMigrations().Any())
+        {
+            this.Database.Migrate();
+        }
     }
 }
