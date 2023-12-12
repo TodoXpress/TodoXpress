@@ -2,8 +2,7 @@
 using FluentValidation;
 using OneOf;
 using TodoXpress.Application.Contracts.MediatR;
-using TodoXpress.Application.Contracts.Persistence;
-using TodoXpress.Application.Contracts.Persistence.Services;
+using TodoXpress.Application.Contracts.Services.Calendars;
 using TodoXpress.Domain;
 using TodoXpress.Domain.Calendars;
 using TodoXpress.Domain.Common;
@@ -14,14 +13,12 @@ public class UpdateCalendarCommandHandler : IOneOfRequestHandler<UpdateCalendarC
 {
     readonly IValidator<UpdateCalendarCommand> validator;
 
-    readonly ICalendarDataService calendarService;
-    readonly ICalendarUnitOfWork uow;
+    readonly ICalendarService calendarService;
 
-    public UpdateCalendarCommandHandler(IValidator<UpdateCalendarCommand> validator, ICalendarDataService calendarService, ICalendarUnitOfWork uow)
+    public UpdateCalendarCommandHandler(IValidator<UpdateCalendarCommand> validator, ICalendarService calendarService)
     {
         this.validator = validator;
         this.calendarService = calendarService;
-        this.uow = uow;
     }
 
     public async Task<OneOf<UpdateCalendarResponse, IError>> Handle(UpdateCalendarCommand request, CancellationToken cancellationToken)
@@ -52,12 +49,12 @@ public class UpdateCalendarCommandHandler : IOneOfRequestHandler<UpdateCalendarC
             B = request.NewColor?.B ?? 0,
         };
 
-        calendar.UpdateWith(request.NewCalendarName, request.NewColor is not null ? newColor : null);
+        calendarService.UpdateValues(calendar, request.NewCalendarName, newColor);
 
         var success = await calendarService.UpdateAsync(request.CalendarId, calendar);
         
         if (success)
-            success = success && await uow.SaveChangesAsync();
+            success = success && await calendarService.SaveChangesAsync();
 
         //response
         return new UpdateCalendarResponse()

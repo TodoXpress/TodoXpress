@@ -7,8 +7,6 @@ namespace TodoXpress.Domain.Calendars.DTO.Calendars;
 /// </summary>
 public record struct UpdateCalendarRequestDTO
 {
-    public Guid CalendarId { get; set; }
-
     public string Name { get; set; }
 
     public ARGBColor Color { get; set; }

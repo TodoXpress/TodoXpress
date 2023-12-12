@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TodoXpress.Application.Contracts.Persistence.Services;
+using TodoXpress.Application.Contracts.Services.Calendars;
 using TodoXpress.Domain.Calendars;
 using TodoXpress.Infastructure.Persistence.Contexts;
 using TodoXpress.Infastructure.Persistence.Services.Base;
@@ -10,7 +10,7 @@ namespace TodoXpress.Infastructure;
 /// Implementation of the service to manage users for calendars on the persistence level.
 /// </summary>
 /// <param name="context">The <see cref="CalendarDbContext"/> for the entity framework.</param>
-public class CalendarUserService(CalendarDbContext context) : DataServiceBase<User>(context), ICalendarUserDataService
+public class CalendarUserService(CalendarDbContext context) : DataServiceBase<User>(context), ICalendarUserService
 {
     /// <inheritdoc/>
     public async Task<User?> ReadSingleAsync(Guid id)

@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TodoXpress.Application.Contracts.Persistence.Services;
+using TodoXpress.Application.Contracts.Services.Calendars;
 using TodoXpress.Domain.Calendars;
 using TodoXpress.Infastructure.Persistence.Contexts;
 using TodoXpress.Infastructure.Persistence.Services.Base;
@@ -10,8 +10,8 @@ namespace TodoXpress.Infastructure.Persistence.Services.Calendars;
 /// Implementation of the service to manage calendars on the persistence level.
 /// </summary>
 /// <param name="context">The <see cref="CalendarDbContext"/> for the entity framework.</param>
-public sealed class CalendarService(CalendarDbContext context) 
-    : DataServiceBase<Calendar>(context), ICalendarDataService
+internal sealed class CalendarService(CalendarDbContext context, CalendarUnitOfWork uow) 
+    : DataServiceBase<Calendar>(context), ICalendarService
 {
     /// <inheritdoc/>
     public async Task<Calendar?> ReadSingleAsync(Guid id)
@@ -74,5 +74,22 @@ public sealed class CalendarService(CalendarDbContext context)
         var entity = _set.Remove(calendar);
 
         return Equals(entity.State, EntityState.Deleted);
+    }
+
+    public void UpdateValues(Calendar calendar, string? newName, Domain.Common.Color? newColor)
+    {
+        if (calendar is null)
+            return;
+
+        if (newName is not null || Equals(calendar.Name, newName))
+            calendar.Name = newName;
+
+        if(newColor is not null)
+            calendar.Color = newColor;
+    }
+
+    public async Task<bool> SaveChangesAsync()
+    {
+        return await uow.SaveChangesAsync();
     }
 }

@@ -4,6 +4,7 @@ using OneOf;
 using TodoXpress.Application.Contracts.MediatR;
 using TodoXpress.Application.Contracts.Persistence.Common;
 using TodoXpress.Application.Contracts.Persistence.Services;
+using TodoXpress.Application.Contracts.Services.Calendars;
 using TodoXpress.Domain;
 using TodoXpress.Domain.Calendars;
 
@@ -12,10 +13,10 @@ namespace TodoXpress.Application.CalendarDomain.Calendars.Querys.GetAllFromUser;
 public class GetAllFromUserQueryHandler : IOneOfRequestHandler<GetAllCalendarFromUserQuery, GetAllCalendarFromUserResponse>
 {
     IValidator<GetAllCalendarFromUserQuery> _validator;
-    ICalendarDataService _calendarService;
+    ICalendarService _calendarService;
     IReadableDataService<User> _userService;
 
-    public GetAllFromUserQueryHandler(ICalendarUserDataService userService, ICalendarDataService calendarService, IValidator<GetAllCalendarFromUserQuery> validator)
+    public GetAllFromUserQueryHandler(ICalendarUserService userService, ICalendarService calendarService, IValidator<GetAllCalendarFromUserQuery> validator)
     {
         _userService = userService;
         _calendarService = calendarService;
