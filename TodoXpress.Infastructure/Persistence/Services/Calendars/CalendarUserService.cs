@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TodoXpress.Application.Contracts.Persistence.Services;
+using TodoXpress.Application.Contracts.Services.Calendars;
 using TodoXpress.Domain.Calendars;
 using TodoXpress.Infastructure.Persistence.Contexts;
 using TodoXpress.Infastructure.Persistence.Services.Base;
+using TodoXpress.Infastructure.Persistence.Services.Calendars;
 
 namespace TodoXpress.Infastructure;
 
@@ -10,7 +11,9 @@ namespace TodoXpress.Infastructure;
 /// Implementation of the service to manage users for calendars on the persistence level.
 /// </summary>
 /// <param name="context">The <see cref="CalendarDbContext"/> for the entity framework.</param>
-public class CalendarUserService(CalendarDbContext context) : DataServiceBase<User>(context), ICalendarUserDataService
+/// <param name="uow">The unit of work to save stuff to the database.</param>
+internal class CalendarUserService(CalendarDbContext context, CalendarUnitOfWork uow) 
+    : DataServiceBase<User>(context), ICalendarUserService
 {
     /// <inheritdoc/>
     public async Task<User?> ReadSingleAsync(Guid id)
@@ -57,5 +60,10 @@ public class CalendarUserService(CalendarDbContext context) : DataServiceBase<Us
         var entity = _set.Remove(user);
 
         return Equals(entity.State, EntityState.Deleted);
+    }
+
+    public async Task<bool> SaveChangesAsync()
+    {
+        return await uow.SaveChangesAsync();
     }
 }

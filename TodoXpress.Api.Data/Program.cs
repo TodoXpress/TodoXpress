@@ -17,7 +17,7 @@ builder.Services
 // add infastructure layer
 builder.Services
     .AddCalendarDbContext(config)
-    .AddDataServices()
+    .AddCalendarServices()
     .AddFluentValidation();
 
 WebApplication app = builder.Build();

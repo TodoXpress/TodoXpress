@@ -2,9 +2,8 @@
 using FluentValidation.Results;
 using OneOf;
 using TodoXpress.Application.Contracts.MediatR;
-using TodoXpress.Application.Contracts.Persistence;
 using TodoXpress.Application.Contracts.Persistence.Common;
-using TodoXpress.Application.Contracts.Persistence.Services;
+using TodoXpress.Application.Contracts.Services.Calendars;
 using TodoXpress.Domain;
 using TodoXpress.Domain.Calendars;
 
@@ -14,15 +13,12 @@ public class DeleteCalendarCommandHandler : IOneOfRequestHandler<DeleteCalendarC
 {
     readonly IValidator<DeleteCalendarCommand>  validator;
 
-    readonly IDeleteableDataService<Calendar> calendarService;
+    readonly ICalendarService calendarService;
 
-    readonly ICalendarUnitOfWork uow;
-
-    public DeleteCalendarCommandHandler(IValidator<DeleteCalendarCommand> validator, ICalendarDataService calendarService, ICalendarUnitOfWork uow)
+    public DeleteCalendarCommandHandler(IValidator<DeleteCalendarCommand> validator, ICalendarService calendarService)
     {
         this.validator = validator;
         this.calendarService = calendarService;
-        this.uow = uow;
     }
 
     public async Task<OneOf<DeleteCalendarResponse, IError>> Handle(DeleteCalendarCommand request, CancellationToken cancellationToken)
@@ -40,7 +36,7 @@ public class DeleteCalendarCommandHandler : IOneOfRequestHandler<DeleteCalendarC
         var success = await calendarService.DeleteAsync(request.CalendarId);
         
         if (success)
-            success = success && await uow.SaveChangesAsync();
+            success = success && await calendarService.SaveChangesAsync();
 
         return new DeleteCalendarResponse()
         {

@@ -3,8 +3,11 @@
 /// <summary>
 /// Defines the service for a transactional operation on the persistence level.
 /// </summary>
-/// <typeparam name="T">The type of the DbContext.</typeparam>
-public interface IUnitOfWork<T> where T : IDbContext
+public interface IUnitOfWork
 {
+    /// <summary>
+    /// Saves the changes to the database.
+    /// </summary>
+    /// <returns><see langword="true"/> if the operation was successfull, otherwise <see langword="false"/>.</returns>
     public Task<bool> SaveChangesAsync();
 }

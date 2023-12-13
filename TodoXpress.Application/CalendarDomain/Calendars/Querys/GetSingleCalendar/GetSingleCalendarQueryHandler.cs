@@ -2,8 +2,7 @@
 using FluentValidation.Results;
 using OneOf;
 using TodoXpress.Application.Contracts.MediatR;
-using TodoXpress.Application.Contracts.Persistence.Common;
-using TodoXpress.Application.Contracts.Persistence.Services;
+using TodoXpress.Application.Contracts.Services.Calendars;
 using TodoXpress.Domain;
 using TodoXpress.Domain.Calendars;
 
@@ -12,9 +11,9 @@ namespace TodoXpress.Application.CalendarDomain.Calendars.Querys.GetSingleCalend
 public class GetSingleCalendarQueryHandler : IOneOfRequestHandler<GetSingleCalendarQuery, GetSingleCalendarResponse>
 {
     IValidator<GetSingleCalendarQuery> _validator;
-    IReadableDataService<Calendar> _calendarService;
+    ICalendarService _calendarService;
 
-    public GetSingleCalendarQueryHandler(IValidator<GetSingleCalendarQuery> validator, ICalendarDataService calendarData)
+    public GetSingleCalendarQueryHandler(IValidator<GetSingleCalendarQuery> validator, ICalendarService calendarData)
     {
         _validator = validator;
         _calendarService = calendarData;

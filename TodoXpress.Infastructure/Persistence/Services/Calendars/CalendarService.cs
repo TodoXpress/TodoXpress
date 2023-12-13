@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using TodoXpress.Application.Contracts.Persistence.Services;
+using TodoXpress.Application.Contracts.Services.Calendars;
 using TodoXpress.Domain.Calendars;
 using TodoXpress.Infastructure.Persistence.Contexts;
 using TodoXpress.Infastructure.Persistence.Services.Base;
@@ -10,8 +10,9 @@ namespace TodoXpress.Infastructure.Persistence.Services.Calendars;
 /// Implementation of the service to manage calendars on the persistence level.
 /// </summary>
 /// <param name="context">The <see cref="CalendarDbContext"/> for the entity framework.</param>
-public sealed class CalendarService(CalendarDbContext context) 
-    : DataServiceBase<Calendar>(context), ICalendarDataService
+/// <param name="uow">The unit of work to save stuff to the database.</param>
+internal sealed class CalendarService(CalendarDbContext context, CalendarUnitOfWork uow) 
+    : DataServiceBase<Calendar>(context), ICalendarService
 {
     /// <inheritdoc/>
     public async Task<Calendar?> ReadSingleAsync(Guid id)
@@ -74,5 +75,29 @@ public sealed class CalendarService(CalendarDbContext context)
         var entity = _set.Remove(calendar);
 
         return Equals(entity.State, EntityState.Deleted);
+    }
+
+    /// <summary>
+    /// Updates the <paramref name="calendar"/> object when the new values are different from the current values.
+    /// </summary>
+    /// <param name="calendar">The calendar to update.</param>
+    /// <param name="newName">The new name of the calendar.</param>
+    /// <param name="newColor">The new color of the calendar.</param>
+    public void UpdateValues(Calendar calendar, string? newName, Domain.Common.Color? newColor)
+    {
+        if (calendar is null)
+            return;
+
+        if (newName is not null || Equals(calendar.Name, newName))
+            calendar.Name = newName;
+
+        if(newColor is not null)
+            calendar.Color = newColor;
+    }
+
+    /// <inheritdoc/>
+    public async Task<bool> SaveChangesAsync()
+    {
+        return await uow.SaveChangesAsync();
     }
 }

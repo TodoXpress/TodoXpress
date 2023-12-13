@@ -8,7 +8,7 @@ public abstract class DataServiceBase<T> where T : class, IIdentifieable
 {
     private protected DbSet<T> _set;
 
-    public DataServiceBase(CalendarDbContext context)
+    public DataServiceBase(DbContext context)
     {
         _set = context.Set<T>();
     }

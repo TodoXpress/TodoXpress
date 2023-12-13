@@ -21,35 +21,37 @@ public class CalendarModul : ICarterModule
         var group = app.MapGroup("calendars")
             .WithDisplayName("Calendar operations");
 
-        group.MapGet("calendar/{calendarId:Guid}", GetSingleCalendar)
-            .Produces<QueryCalendarResponseDTO>(StatusCodes.Status200OK)
-            .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
-            .WithDescription("Fetch a single calendar")
-            .WithOpenApi();
-
-        group.MapGet("user/{userId:Guid}/calendars/", GetAllCalendarFromUser)
+        app.MapGet("user/{userId:Guid}/calendars/", GetAllCalendarFromUser)
             .Produces<List<QueryCalendarResponseDTO>>(StatusCodes.Status200OK)
             .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
             .WithDescription("Fetching all calendars from a user")
             .WithOpenApi();
 
-        group.MapPut("calendar", CreateCalendar)
+        group.MapGet("/{calendarId:Guid}", GetSingleCalendar)
+            .Produces<QueryCalendarResponseDTO>(StatusCodes.Status200OK)
+            .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
+            .WithDescription("Fetch a single calendar")
+            .WithOpenApi();
+
+        group.MapPut("/", CreateCalendar)
             .Accepts<CreateCalendarRequestDTO>(Media.Application.Json)
             .Produces(StatusCodes.Status201Created)
+            .Produces(StatusCodes.Status500InternalServerError)
             .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
             .WithDescription("Creates a new calendar.")
             .WithOpenApi();
 
-        group.MapPost("calendar", UpdateCalendar)
+        group.MapPost("/{calendarId:Guid}", UpdateCalendar)
             .Accepts<UpdateCalendarRequestDTO>(Media.Application.Json)
             .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status500InternalServerError)
             .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
             .WithDescription("Updates the values of an existing calendar")
             .WithOpenApi();
 
-        group.MapDelete("calendar", DeleteCalendar)
-            .Accepts<DeleteCalendarRequestDTO>(Media.Application.Json)
+        group.MapDelete("/{calendarId:Guid}", DeleteCalendar)
             .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status500InternalServerError)
             .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
             .WithDescription("Deletes an existing calendar")
             .WithOpenApi();
@@ -137,13 +139,14 @@ public class CalendarModul : ICarterModule
     /// Endpoint for update an existing calendar.
     /// </summary>
     /// <param name="mediatR">DI of the mediatR sender.</param>
+    /// <param name="calendarId">The id of the calendar to update.</param>
     /// <param name="updateRequest">The request for updating the calendar.</param>
     /// <returns>A http result.</returns>
-    public async Task<IResult> UpdateCalendar([FromServices] ISender mediatR, [FromBody] UpdateCalendarRequestDTO updateRequest)
+    public async Task<IResult> UpdateCalendar([FromServices] ISender mediatR,[FromRoute] Guid calendarId,[FromBody] UpdateCalendarRequestDTO updateRequest)
     {
         var updateCommand = new UpdateCalendarCommand() 
         {
-            CalendarId = updateRequest.CalendarId,
+            CalendarId = calendarId,
             NewCalendarName = updateRequest.Name,
             NewColor = updateRequest.Color
         };
@@ -160,13 +163,13 @@ public class CalendarModul : ICarterModule
     /// Endpoint for deleting an existing calendar.
     /// </summary>
     /// <param name="mediatR">DI of the mediatR sender.</param>
-    /// <param name="deleteRequest">the request for deleting the calendar.</param>
+    /// <param name="calendarId">the id of the calendar.</param>
     /// <returns>A http result.</returns>
-    public async Task<IResult> DeleteCalendar([FromServices] ISender mediatR, [FromBody] DeleteCalendarRequestDTO deleteRequest)
+    public async Task<IResult> DeleteCalendar([FromServices] ISender mediatR, [FromRoute] Guid calendarId)
     {
         var deleteCommand = new DeleteCalendarCommand()
         {
-            CalendarId = deleteRequest.CalendarId
+            CalendarId = calendarId
         };
 
         var result = await mediatR.Send(deleteCommand);

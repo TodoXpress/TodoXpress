@@ -1,4 +1,6 @@
 ﻿
+using TodoXpress.Domain.Common.ValueTypes;
+
 namespace TodoXpress.Domain.Common;
 
 /// <summary>

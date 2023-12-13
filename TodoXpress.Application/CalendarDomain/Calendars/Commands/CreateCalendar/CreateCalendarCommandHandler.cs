@@ -2,9 +2,8 @@
 using FluentValidation;
 using OneOf;
 using TodoXpress.Application.Contracts.MediatR;
-using TodoXpress.Application.Contracts.Persistence;
 using TodoXpress.Application.Contracts.Persistence.Common;
-using TodoXpress.Application.Contracts.Persistence.Services;
+using TodoXpress.Application.Contracts.Services.Calendars;
 using TodoXpress.Domain;
 using TodoXpress.Domain.Calendars;
 
@@ -13,20 +12,17 @@ namespace TodoXpress.Application.CalendarDomain.Calendars.Commands.CreateCalenda
 public class CreateCalendarCommandHandler : IOneOfRequestHandler<CreateCalendarCommand, CreateCalendarResponse>
 {
     readonly IValidator<CreateCalendarCommand> _validator;
-    readonly ICreateableDataService<Calendar> _calendarService;
+    readonly ICalendarService _calendarService;
     readonly IReadableDataService<User> _userService;
-    readonly ICalendarUnitOfWork _uow;
 
     public CreateCalendarCommandHandler(
         IValidator<CreateCalendarCommand> validator, 
-        ICalendarDataService calendarData,
-        ICalendarUserDataService userData,
-        ICalendarUnitOfWork unitOfWork)
+        ICalendarService calendarData,
+        ICalendarUserService userData)
     {
         _validator = validator;
         _calendarService = calendarData;
         _userService = userData;
-        _uow = unitOfWork;
     }
 
     public async Task<OneOf<CreateCalendarResponse, IError>> Handle(CreateCalendarCommand request, CancellationToken cancellationToken)
@@ -56,7 +52,7 @@ public class CreateCalendarCommandHandler : IOneOfRequestHandler<CreateCalendarC
 
         // create and save calendar
         var calendarId = await _calendarService.CreateAsync(calendar);
-        bool saveSuccessfull = await _uow.SaveChangesAsync();
+        bool saveSuccessfull = await _calendarService.SaveChangesAsync();
 
         if (Equals(calendarId, Guid.Empty) || !saveSuccessfull)
         {

@@ -1,9 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using TodoXpress.Application.Contracts.Persistence.Services;
-using TodoXpress.Application.Contracts.Persistence;
 using TodoXpress.Infastructure.Persistence.Services.Calendars;
+using TodoXpress.Application.Contracts.Services.Calendars;
 using TodoXpress.Infastructure.Persistence.Contexts;
 using TodoXpress.Infastructure.Validation.Calendar;
 using FluentValidation;
@@ -17,11 +16,11 @@ public static class DependencyInjection
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection"/>.</param>
     /// <returns>The <see cref="IServiceCollection"/>.</returns>
-    public static IServiceCollection AddDataServices(this IServiceCollection services)
+    public static IServiceCollection AddCalendarServices(this IServiceCollection services)
     {
-        services.AddScoped<ICalendarUnitOfWork, CalendarUnitOfWork>();
-        services.AddScoped<ICalendarDataService, CalendarService>();
-        services.AddScoped<ICalendarUserDataService, CalendarUserService>();
+        services.AddScoped<CalendarUnitOfWork>();
+        services.AddScoped<ICalendarService, CalendarService>();
+        services.AddScoped<ICalendarUserService, CalendarUserService>();
 
         return services;
     }
