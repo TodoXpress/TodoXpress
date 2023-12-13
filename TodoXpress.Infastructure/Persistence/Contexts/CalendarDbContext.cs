@@ -8,7 +8,7 @@ namespace TodoXpress.Infastructure.Persistence.Contexts;
 /// <summary>
 /// The db context for the calendar domain.
 /// </summary>
-public sealed class CalendarDbContext : DbContext, IDbContext
+public sealed class CalendarDbContext : DbContext
 {
     internal DbSet<Calendar> Calendars { get; set; }
 
