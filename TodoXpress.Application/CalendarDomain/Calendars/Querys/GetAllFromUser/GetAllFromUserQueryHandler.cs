@@ -3,7 +3,6 @@ using FluentValidation.Results;
 using OneOf;
 using TodoXpress.Application.Contracts.MediatR;
 using TodoXpress.Application.Contracts.Persistence.Common;
-using TodoXpress.Application.Contracts.Persistence.Services;
 using TodoXpress.Application.Contracts.Services.Calendars;
 using TodoXpress.Domain;
 using TodoXpress.Domain.Calendars;
