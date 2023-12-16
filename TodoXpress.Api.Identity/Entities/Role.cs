@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace TodoXpress.Api.Identity;
+namespace TodoXpress.Api.Identity.Entities;
 
 internal class Role : IdentityRole<Guid>
 {
