@@ -9,23 +9,34 @@ public class PermissionsEndpoint : ICarterModule
     {
         // Maps role endpoints
         var roles = app.MapGroup("roles");
-        roles.MapCRUD<Role>();
+        MapCRUD<Role>(roles);
         // Map endpoints for manage permissions of a role
         var perm = roles.MapGroup("{roleId:guid}/permission/{id:guid}");
-        roles.MapPut("", AssignPermission);
-        roles.MapDelete("", RemovePermission);
+        perm.MapPut("", AssignPermission);
+        perm.MapDelete("", RemovePermission);
 
         // map permission endpoints
         var permissions = app.MapGroup("permissions");
-        permissions.MapCRUD<Permission>();
+        MapCRUD<Permission>(permissions);
 
         // map ressource endpoints
         var ressources = app.MapGroup("ressources");
-        ressources.MapCRUD<Ressource>();
+        MapCRUD<Ressource>(ressources);
 
         // map scope endpoints
         var scopes = app.MapGroup("scopes");
-        scopes.MapCRUD<Scope>();
+        MapCRUD<Scope>(scopes);
+    }
+
+    public IEndpointRouteBuilder MapCRUD<TType>(IEndpointRouteBuilder route)
+    {
+        route.MapGet("", GetAll<TType>);
+        route.MapGet("{id:guid}", Get<TType>);
+        route.MapPut("", Create<TType>);
+        route.MapPost("", Update<TType>);
+        route.MapDelete("", Delete<TType>);
+
+        return route;
     }
 
     public IResult AssignPermission(Guid id)
@@ -38,45 +49,27 @@ public class PermissionsEndpoint : ICarterModule
         return Results.Ok();
     }
 
-}
-
-public static class EndpointExtention
-{
-    public static IEndpointRouteBuilder MapCRUD<TType>(this IEndpointRouteBuilder route)
-    {
-        route.MapGet("", CRUDEndpoints<Role>.GetAll);
-        route.MapGet("{id:guid}", CRUDEndpoints<Role>.Get);
-        route.MapPut("", CRUDEndpoints<Role>.Create);
-        route.MapPost("", CRUDEndpoints<Role>.Update);
-        route.MapDelete("", CRUDEndpoints<Role>.Delete);
-
-        return route;
-    }
-}
-
-public static class CRUDEndpoints<T>
-{
-    public static IResult Get()
+    public IResult Get<T>()
     {
         return Results.Ok();
     }
 
-    public static IResult GetAll()
+    public IResult GetAll<T>()
     {
         return Results.Ok();
     }
 
-    public static IResult Create()
+    public IResult Create<T>()
     {
         return Results.Ok();
     }
 
-    public static IResult Update()
+    public IResult Update<T>()
     {
         return Results.Ok();
     }
 
-    public static IResult Delete()
+    public IResult Delete<T>()
     {
         return Results.Ok();
     }
