@@ -1,4 +1,4 @@
-﻿using System.Security.Claims;
+﻿using Carter;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -13,14 +13,21 @@ var config = builder.Configuration;
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCarter();
+
 // identity
 builder.Services.AddDbContext<IdentityContext>(options =>
     options.UseNpgsql(config.GetConnectionString("Default")));
 
 builder.Services
-    .AddIdentityApiEndpoints<User>()
-    .AddEntityFrameworkStores<IdentityContext>()
-    .AddDefaultTokenProviders();
+    // .AddIdentityApiEndpoints<User>()
+    // .AddEntityFrameworkStores<IdentityContext>();
+    .AddIdentity<User, Role>()
+    .AddRoleStore<RoleStore<Role, IdentityContext, Guid>>()
+    .AddRoleManager<RoleManager<Role>>()
+    .AddUserStore<UserStore<User, Role, IdentityContext, Guid>>()
+    .AddUserManager<UserManager<User>>()
+    .AddSignInManager();
 
 builder.Services.AddAuthentication(IdentityConstants.BearerScheme);
 builder.Services.AddAuthorizationBuilder();
@@ -35,9 +42,10 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication()
-    .UseAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
 
-app.MapIdentityApi<User>();
+//app.MapIdentityApi<User>();
+app.MapCarter();
 
 app.Run();
