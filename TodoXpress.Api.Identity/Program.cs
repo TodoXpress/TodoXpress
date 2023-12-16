@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using TodoXpress.Api.Identity;
 using TodoXpress.Api.Identity.Entities;
 using TodoXpress.Api.Identity.Persistence;
 
@@ -45,7 +44,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-//app.MapIdentityApi<User>();
 app.MapCarter();
+app.MapGet("",() => Results.Ok());
 
 app.Run();
