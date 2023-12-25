@@ -1,38 +1,22 @@
 ﻿using Carter;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
-using TodoXpress.Api.Identity.Services;
-using TodoXpress.Api.Identity.Entities;
-using TodoXpress.Api.Identity.Persistence;
+using TodoXpress.Api.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
 
 // swagger
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddCarter();
+builder.Services.AddSwagger();
 
 // identity
-builder.Services.AddDbContext<IdentityContext>(options =>
-    options.UseNpgsql(config.GetConnectionString("Default")));
-
-builder.Services
-    .AddIdentity<User, Role>()
-    .AddRoleStore<RoleStore<Role, IdentityContext, Guid>>()
-    .AddRoleManager<RoleManager<Role>>()
-    .AddUserStore<UserStore<User, Role, IdentityContext, Guid>>()
-    .AddUserManager<UserManager<User>>()
-    .AddSignInManager();
+builder.Services.AddAspIdentity(config);
 
 // auth
-builder.Services.AddAuthentication(IdentityConstants.BearerScheme);
-builder.Services.AddAuthorizationBuilder();
+builder.Services.AddAuthentication(config);
+builder.Services.AddAuthentication();
 
 // services
-builder.Services.AddScoped<IdentityService>();
+builder.Services.AddServices();
+builder.Services.AddCarter();
 
 var app = builder.Build();
 
