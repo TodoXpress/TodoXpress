@@ -19,8 +19,6 @@ builder.Services.AddDbContext<IdentityContext>(options =>
     options.UseNpgsql(config.GetConnectionString("Default")));
 
 builder.Services
-    // .AddIdentityApiEndpoints<User>()
-    // .AddEntityFrameworkStores<IdentityContext>();
     .AddIdentity<User, Role>()
     .AddRoleStore<RoleStore<Role, IdentityContext, Guid>>()
     .AddRoleManager<RoleManager<Role>>()
@@ -44,7 +42,9 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapCarter();
-app.MapGet("",() => Results.Ok());
+var version = app.MapGroup("v1");
+
+version.MapCarter();
+version.MapGet("",() => Results.Ok());
 
 app.Run();
