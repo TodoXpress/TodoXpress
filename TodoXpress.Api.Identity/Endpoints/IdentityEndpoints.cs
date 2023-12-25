@@ -61,29 +61,17 @@ internal class IdentityEndpoints : ICarterModule
         return TypedResults.Ok();
     }
 
-    public async Task<IResult> LoginAsync([FromServices] IServiceProvider sp, [FromBody] LoginRequest login)
+    public async Task<IResult> LoginAsync([FromServices] IdentityService identity, [FromBody] LoginRequest login)
     {
-        var signInManager = sp.GetRequiredService<SignInManager<User>>();
-        signInManager.AuthenticationScheme = IdentityConstants.BearerScheme;
+        var (success, user) = await identity.LoginAsync(login.Email, login.Password);
 
-        var result = await signInManager.PasswordSignInAsync(login.Email, login.Password, true, lockoutOnFailure: true);
-
-        if (result.RequiresTwoFactor)
+        if (!success)
         {
-            if (!string.IsNullOrEmpty(login.TwoFactorCode))
-            {
-                result = await signInManager.TwoFactorAuthenticatorSignInAsync(login.TwoFactorCode, true, rememberClient: true);
-            }
-            else if (!string.IsNullOrEmpty(login.TwoFactorRecoveryCode))
-            {
-                result = await signInManager.TwoFactorRecoveryCodeSignInAsync(login.TwoFactorRecoveryCode);
-            }
+            return TypedResults.Problem();
         }
 
-        if (!result.Succeeded)
-        {
-            return TypedResults.Problem(result.ToString(), statusCode: StatusCodes.Status401Unauthorized);
-        }
+        
+
         return TypedResults.Empty;
     }
 

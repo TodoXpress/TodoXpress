@@ -13,7 +13,8 @@ internal sealed class IdentityService(
     RoleManager<Role> roleManager, 
     IUserStore<User> userStore,
     IEmailSender<User> emailSender,
-    LinkGenerator linkGenerator)
+    LinkGenerator linkGenerator,
+    SignInManager<User> signInManager)
 {
 
     /// <summary>
@@ -30,6 +31,44 @@ internal sealed class IdentityService(
         return true;
     }
 
+    public async Task<(bool, User?)> LoginAsync(string email, string password)
+    {
+        signInManager.AuthenticationScheme = IdentityConstants.BearerScheme;
+        var result = await signInManager.PasswordSignInAsync(email, password, isPersistent: true, lockoutOnFailure: true);
+
+        if (!result.Succeeded)
+        {
+            return (false, null);
+        }
+
+        var user = await userManager.FindByEmailAsync(email);
+        if (user is null)
+        {
+            return (false, null);
+        }
+
+        return (true, user);
+    }
+
+    public LoginResponse CreateAuthTokenForUser(User user)
+    {
+        var jwtToken = GenerateJwtToken(user);
+        var refreshToken = GenerateRefreshToken();
+
+        return default;
+    }
+
+    // TODO: Implement JWT Generation
+    private string GenerateJwtToken(User user)
+    {
+        return string.Empty;
+    }
+
+    private string GenerateRefreshToken()
+    {
+        return string.Empty;
+    }
+
     /// <summary>
     /// Gets a flag indicating whether the backing user store supports user emails.
     /// </summary>
@@ -41,7 +80,7 @@ internal sealed class IdentityService(
     /// </summary>
     /// <param name="request">The reuqest from which the user should be created.</param>
     /// <returns>The Task that represents the asynchronous operation, containing the IdentityResult of the operation.</returns>
-    public async Task<(IdentityResult, User? user)> CreateUserAsync(RegisterRequest request)
+    public async Task<(IdentityResult, User?)> CreateUserAsync(RegisterRequest request)
     {
         var emailStore = (IUserEmailStore<User>)userStore;
         var email = request.Email;
