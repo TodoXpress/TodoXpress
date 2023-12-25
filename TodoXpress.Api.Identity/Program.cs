@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using TodoXpress.Api.Identity.Services;
 using TodoXpress.Api.Identity.Entities;
 using TodoXpress.Api.Identity.Persistence;
 
@@ -26,8 +27,12 @@ builder.Services
     .AddUserManager<UserManager<User>>()
     .AddSignInManager();
 
+// auth
 builder.Services.AddAuthentication(IdentityConstants.BearerScheme);
 builder.Services.AddAuthorizationBuilder();
+
+// services
+builder.Services.AddScoped<IdentityService>();
 
 var app = builder.Build();
 
