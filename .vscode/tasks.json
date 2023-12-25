@@ -14,7 +14,7 @@
 			"type": "maui",
 			"targetFramework": "net8.0-ios",
 			"configuration": "Debug",
-			"project": "/Users/fabian/Developer/TodoXpress_Project/TodoXpress/TodoXpress.Ui.Native/TodoXpress.Ui.Native.csproj",
+			"project": "${workspaceFolder}/TodoXpress.Ui.Native/TodoXpress.Ui.Native.csproj",
 			"problemMatcher": [
 				"$msCompile"
 			],
@@ -24,7 +24,7 @@
 			"type": "maui",
 			"targetFramework": "net8.0-android",
 			"configuration": "Debug",
-			"project": "/Users/fabian/Developer/TodoXpress_Project/TodoXpress/TodoXpress.Ui.Native/TodoXpress.Ui.Native.csproj",
+			"project": "${workspaceFolder}/TodoXpress.Ui.Native/TodoXpress.Ui.Native.csproj",
 			"problemMatcher": [
 				"$msCompile"
 			],
@@ -34,7 +34,7 @@
 			"type": "maui",
 			"targetFramework": "net8.0-maccatalyst",
 			"configuration": "Debug",
-			"project": "/Users/fabian/Developer/TodoXpress_Project/TodoXpress/TodoXpress.Ui.Native/TodoXpress.Ui.Native.csproj",
+			"project": "${workspaceFolder}/TodoXpress.Ui.Native/TodoXpress.Ui.Native.csproj",
 			"problemMatcher": [
 				"$msCompile"
 			],
