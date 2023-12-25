@@ -21,7 +21,7 @@ public class CalendarModul : ICarterModule
         var group = app.MapGroup("calendars")
             .WithDisplayName("Calendar operations");
 
-        app.MapGet("user/{userId:Guid}/calendars/", GetAllCalendarFromUser)
+        app.MapGet("users/{userId:Guid}/calendars", GetAllCalendarFromUser)
             .Produces<List<QueryCalendarResponseDTO>>(StatusCodes.Status200OK)
             .Produces<ErrorResponse>(StatusCodes.Status400BadRequest)
             .WithDescription("Fetching all calendars from a user")
