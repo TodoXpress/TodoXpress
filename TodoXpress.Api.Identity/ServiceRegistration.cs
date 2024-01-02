@@ -3,6 +3,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -92,6 +93,7 @@ public static class ServiceRegistration
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddScoped<IdentityService>();
+        services.AddScoped<TokenService>();
 
         return services;
     }
