@@ -12,6 +12,8 @@ internal class IdentityContext : IdentityDbContext<User, Role, Guid>
 
     internal DbSet<Scope> Scopes { get; set; }
 
+    internal DbSet<RefreshToken> RefreshTokens { get; set; }
+
     public IdentityContext(DbContextOptions<IdentityContext> options) 
         : base(options)
     {

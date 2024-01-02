@@ -1,4 +1,4 @@
-﻿namespace TodoXpress.Api.Identity;
+﻿namespace TodoXpress.Api.Identity.DTOs;
 
 /// <summary>
 /// Represents the response from a login.
@@ -7,7 +7,7 @@ public readonly record struct LoginResponse
 {
     public string Token { get; init; }
 
-    public TimeSpan ExpirationTime { get; init; }
+    public DateTime ExpirationTime { get; init; }
 
     public string RefreshToken { get; init; }
 }

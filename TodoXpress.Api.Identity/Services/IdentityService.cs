@@ -50,25 +50,6 @@ internal sealed class IdentityService(
         return (true, user);
     }
 
-    public LoginResponse CreateAuthTokenForUser(User user)
-    {
-        var jwtToken = GenerateJwtToken(user);
-        var refreshToken = GenerateRefreshToken();
-
-        return default;
-    }
-
-    // TODO: Implement JWT Generation
-    private string GenerateJwtToken(User user)
-    {
-        return string.Empty;
-    }
-
-    private string GenerateRefreshToken()
-    {
-        return string.Empty;
-    }
-
     /// <summary>
     /// Gets a flag indicating whether the backing user store supports user emails.
     /// </summary>

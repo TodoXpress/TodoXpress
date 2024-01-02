@@ -1,9 +1,9 @@
 ﻿using Carter;
 using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using TodoXpress.Api.Identity.DTOs;
 using TodoXpress.Api.Identity.Entities;
 using TodoXpress.Api.Identity.Services;
 
@@ -34,7 +34,7 @@ internal class IdentityEndpoints : ICarterModule
         confirmation.MapPost("resentemail", ResentConfirmation);
     }
 
-    public async Task<IResult> RegisterAsync([FromServices] IdentityService identity, [FromBody] RegisterRequest registration, HttpContext context)
+    public async Task<IResult> RegisterAsync([FromServices] IdentityService identity, [FromBody] IdentityRequestBase registration, HttpContext context)
     {
         if (!identity.SupportsUserEmail())
         {
@@ -61,40 +61,37 @@ internal class IdentityEndpoints : ICarterModule
         return TypedResults.Ok();
     }
 
-    public async Task<IResult> LoginAsync([FromServices] IdentityService identity, [FromBody] LoginRequest login)
+    public async Task<IResult> LoginAsync(
+        [FromServices] IdentityService identity, 
+        [FromServices] TokenService token, 
+        [FromBody] LoginRequest login)
     {
         var (success, user) = await identity.LoginAsync(login.Email, login.Password);
 
         if (!success)
-        {
-            return TypedResults.Problem();
-        }
+            return TypedResults.Problem("Login fehlgeschlagen.");
 
-        
+        var loginResponse = await token.CreateAuthTokenForUser(user!, login.ClientId);
 
-        return TypedResults.Empty;
+        return TypedResults.Ok(loginResponse);
     }
 
-    public async Task<IResult> RefreshAsync([FromServices] IServiceProvider sp, [FromBody] RefreshRequest refreshRequest)
+    public async Task<IResult> RefreshAsync(
+        [FromServices] TokenService tokenService, 
+        [FromServices] UserManager<User> userManager,
+        [FromBody] RefreshTokenRequest refreshRequest)
     {
-        var timeProvider = sp.GetRequiredService<TimeProvider>();
-        var bearerTokenOptions = sp.GetRequiredService<IOptionsMonitor<BearerTokenOptions>>();
+        bool isValidToken = await tokenService.ValidateRefreshTokenasync(refreshRequest.RefreshToken, refreshRequest.UserId, refreshRequest.ClientId);
+    
+        if (!isValidToken)
+            return TypedResults.Unauthorized();
 
-        var signInManager = sp.GetRequiredService<SignInManager<User>>();
-            var refreshTokenProtector = bearerTokenOptions.Get(IdentityConstants.BearerScheme).RefreshTokenProtector;
-            var refreshTicket = refreshTokenProtector.Unprotect(refreshRequest.RefreshToken);
+        var user = await userManager.FindByIdAsync(refreshRequest.UserId.ToString());
+        if (user is null)
+            return TypedResults.Unauthorized();
 
-            // Reject the /refresh attempt with a 401 if the token expired or the security stamp validation fails
-            if (refreshTicket?.Properties?.ExpiresUtc is not { } expiresUtc ||
-                timeProvider.GetUtcNow() >= expiresUtc ||
-                await signInManager.ValidateSecurityStampAsync(refreshTicket.Principal) is not User user)
-
-            {
-                return TypedResults.Challenge();
-            }
-
-            var newPrincipal = await signInManager.CreateUserPrincipalAsync(user);
-            return TypedResults.SignIn(newPrincipal, authenticationScheme: IdentityConstants.BearerScheme);
+        var newLogin = await tokenService.RefreshAuthTokenForUser(refreshRequest.RefreshToken, user, refreshRequest.ClientId);
+        return TypedResults.Ok(newLogin);
     }
 
     public IResult ForgotPassword()

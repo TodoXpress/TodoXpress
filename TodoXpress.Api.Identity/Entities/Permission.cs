@@ -6,7 +6,7 @@ internal class Permission
 
     public Ressource Ressource { get; set; } = new();
 
-    public Scope Scope { get; set; } = new();
+    public List<Scope> Scopes { get; set; } = [];
 }
 
 internal class Ressource
