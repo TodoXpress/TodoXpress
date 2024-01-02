@@ -22,4 +22,13 @@ internal class IdentityContext : IdentityDbContext<User, Role, Guid>
             this.Database.Migrate();
         }
     }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        base.OnModelCreating(builder);
+
+        builder.Entity<Permission>()
+            .HasMany(p => p.Scopes)
+            .WithMany();
+    }
 }
