@@ -18,6 +18,13 @@ internal class TokenService(
     RoleManager<Role> roleManager,
     IdentityContext context)
 {
+
+    /// <summary>
+    /// Creates an auth- and refresh token for a speciffic user.
+    /// </summary>
+    /// <param name="user">The user to create the tokens for.</param>
+    /// <param name="clientId">The id of the client.</param>
+    /// <returns>The tokens.</returns>
     public async Task<LoginResponse> CreateAuthTokenForUser(User user, Guid clientId)
     {
         var (token, expires) = await GenerateJwtTokenAsync(user);
@@ -31,12 +38,26 @@ internal class TokenService(
         };
     }
 
-    public async Task<LoginResponse> RefreshAuthTokenForUser(string token, User user, Guid clientId)
+    /// <summary>
+    /// Refreshes a Token with a speciffic refresh token.
+    /// </summary>
+    /// <param name="refreshToken">The refresh token.</param>
+    /// <param name="user">The user for wich the token should be refreshed.</param>
+    /// <param name="clientId">The id of the client.</param>
+    /// <returns>The new tokens.</returns>
+    public async Task<LoginResponse> RefreshAuthTokenForUser(string refreshToken, User user, Guid clientId)
     {
-        await this.DeleteExistingRefreshToken(token);
+        await this.DeleteExistingRefreshToken(refreshToken);
         return await CreateAuthTokenForUser(user, clientId);
     }
 
+    /// <summary>
+    /// Validates the refresh token.
+    /// </summary>
+    /// <param name="token">the freshtoken.</param>
+    /// <param name="userId">The id of the user.</param>
+    /// <param name="clientId">The id of the client.</param>
+    /// <returns>A bool indicating wheather the token is valid or not.</returns>
     public async Task<bool> ValidateRefreshTokenasync(string token, Guid userId, Guid clientId)
     {
         var refreshToken = await context.RefreshTokens.FirstOrDefaultAsync(rt => Equals(rt.Token, token));

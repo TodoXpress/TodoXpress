@@ -34,6 +34,14 @@ internal class IdentityEndpoints : ICarterModule
         confirmation.MapPost("resentemail", ResentConfirmation);
     }
 
+    /// <summary>
+    /// Registers a new user in the system.
+    /// </summary>
+    /// <param name="identity">The service to interact witch the aspnet identity services.</param>
+    /// <param name="registration">The request with the data for the registration.</param>
+    /// <param name="context">The <see cref="HttpContext"/> of the request.</param>
+    /// <returns>An Http status result.</returns>
+    /// <exception cref="NotSupportedException">Thrown when the userstore don't support mail.</exception>
     public async Task<IResult> RegisterAsync([FromServices] IdentityService identity, [FromBody] IdentityRequestBase registration, HttpContext context)
     {
         if (!identity.SupportsUserEmail())
@@ -61,6 +69,13 @@ internal class IdentityEndpoints : ICarterModule
         return TypedResults.Ok();
     }
 
+    /// <summary>
+    /// Logs a user in.
+    /// </summary>
+    /// <param name="identity">The service to interact witch the aspnet identity services.</param>
+    /// <param name="token">The service to create tokens.</param>
+    /// <param name="login">The request with the data.</param>
+    /// <returns>An Http status result.</returns>
     public async Task<IResult> LoginAsync(
         [FromServices] IdentityService identity, 
         [FromServices] TokenService token, 
@@ -76,6 +91,13 @@ internal class IdentityEndpoints : ICarterModule
         return TypedResults.Ok(loginResponse);
     }
 
+    /// <summary>
+    /// Refreshes the auth token with a refresh token
+    /// </summary>
+    /// <param name="tokenService">The service to create tokens.</param>
+    /// <param name="userManager">The service to interact with user entites.</param>
+    /// <param name="refreshRequest">The request with the data.</param>
+    /// <returns>An Http status result.</returns>
     public async Task<IResult> RefreshAsync(
         [FromServices] TokenService tokenService, 
         [FromServices] UserManager<User> userManager,

@@ -31,6 +31,12 @@ internal sealed class IdentityService(
         return true;
     }
 
+    /// <summary>
+    /// Used to login a User.
+    /// </summary>
+    /// <param name="email">The email of the user.</param>
+    /// <param name="password">The password of the user.</param>
+    /// <returns>A bool which indicates the success of the operration an the user.</returns>
     public async Task<(bool, User?)> LoginAsync(string email, string password)
     {
         signInManager.AuthenticationScheme = IdentityConstants.BearerScheme;
