@@ -1,9 +1,9 @@
-﻿using System.Reflection;
+﻿using System.Net;
+using System.Reflection;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -94,6 +94,19 @@ public static class ServiceRegistration
     {
         services.AddScoped<IdentityService>();
         services.AddScoped<TokenService>();
+        services.AddScoped<IEmailSender<User>>(sp => 
+        {
+            var config = sp.GetRequiredService<IConfiguration>();
+            var mail = config.GetSection("Mail");
+
+            return new EmailService(config["Email:FromAddress"] ?? string.Empty)
+            {
+                Host = mail.GetValue<string>("Host") ?? string.Empty,
+                Port = mail.GetValue<int>("Port"),
+                Credentials = new NetworkCredential(mail.GetValue<string>("User"), mail.GetValue<string>("Password")),
+                EnableSsl = true
+            };
+        });
 
         return services;
     }
