@@ -11,8 +11,8 @@ builder.Services.AddSwagger();
 builder.Services.AddAspIdentity(config);
 
 // auth
-builder.Services.AddAuthentication(config);
-builder.Services.AddAuthentication();
+builder.Services.AddConfiguredAuthentication(config);
+builder.Services.AddConfiguredAuthorization();
 
 // services
 builder.Services.AddServices();

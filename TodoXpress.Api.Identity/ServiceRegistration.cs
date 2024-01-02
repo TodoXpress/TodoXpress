@@ -38,8 +38,8 @@ public static class ServiceRegistration
                 }
             });
 
-            var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-            config.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+            // var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            // config.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
         });
 
         return services;
@@ -60,7 +60,7 @@ public static class ServiceRegistration
         return services;
     }
 
-    public static IServiceCollection AddAuthentication(this IServiceCollection services, IConfiguration config)
+    public static IServiceCollection AddConfiguredAuthentication(this IServiceCollection services, IConfiguration config)
     {
         services.AddAuthentication(options =>
         {
@@ -84,7 +84,7 @@ public static class ServiceRegistration
         return services;
     }
 
-    public static IServiceCollection AddAuthorization(this IServiceCollection services)
+    public static IServiceCollection AddConfiguredAuthorization(this IServiceCollection services)
     {
         services.AddAuthorizationBuilder();
         return services;
