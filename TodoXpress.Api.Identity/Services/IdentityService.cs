@@ -16,7 +16,6 @@ internal sealed class IdentityService(
     LinkGenerator linkGenerator,
     SignInManager<User> signInManager)
 {
-
     /// <summary>
     /// Checks if the given email is valid.
     /// </summary>
@@ -30,6 +29,12 @@ internal sealed class IdentityService(
 
         return true;
     }
+
+    /// <summary>
+    /// Gets a flag indicating whether the backing user store supports user emails.
+    /// </summary>
+    /// <returns>true if the backing user store supports user emails, otherwise false.</returns>
+    public bool SupportsUserEmail() => userManager.SupportsUserEmail;
 
     /// <summary>
     /// Used to login a User.
@@ -55,12 +60,6 @@ internal sealed class IdentityService(
 
         return (true, user);
     }
-
-    /// <summary>
-    /// Gets a flag indicating whether the backing user store supports user emails.
-    /// </summary>
-    /// <returns>true if the backing user store supports user emails, otherwise false.</returns>
-    public bool SupportsUserEmail() => userManager.SupportsUserEmail;
 
     /// <summary>
     /// Creates and returns the user. If an error occures, the returned user is <see langword="null"/>.
@@ -106,7 +105,35 @@ internal sealed class IdentityService(
     }
 
     /// <summary>
-    /// Send a mail to confirm an email adress.
+    /// Resets the password for a user.
+    /// </summary>
+    /// <param name="email">The email address of the user.</param>
+    /// <param name="code">The reset code.</param>
+    /// <param name="newPassword">The new password to set.</param>
+    /// <returns>An <see cref="IdentityResult"/> with information about the operation.</returns>
+    public async Task<IdentityResult> ResetPasswordAsync(string email, string code, string newPassword)
+    {
+        var user = await userManager.FindByEmailAsync(email);
+
+        if (user is null || !await userManager.IsEmailConfirmedAsync(user))
+            return IdentityResult.Failed(userManager.ErrorDescriber.InvalidEmail(email));
+
+        IdentityResult result;
+        try
+        {
+            var decodedCode = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+            result = await userManager.ResetPasswordAsync(user, decodedCode, newPassword);
+        }
+        catch (FormatException)
+        {
+            result = IdentityResult.Failed(userManager.ErrorDescriber.InvalidToken());
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Send a mail to confirm an email address.
     /// </summary>
     /// <param name="user">The user for which the email should be send.</param>
     /// <param name="context">The http context of the request.</param>
@@ -143,5 +170,27 @@ internal sealed class IdentityService(
         var confirmEmailUrl = linkGenerator.GetUriByName(context, confirmEmailEndpointName, routeValues)
             ?? throw new NotSupportedException($"Could not find endpoint named '{confirmEmailEndpointName}'.");
         await emailSender.SendConfirmationLinkAsync(user, email, HtmlEncoder.Default.Encode(confirmEmailUrl));
+    }
+
+    /// <summary>
+    /// Sends a mail with a reset code to reset the password.
+    /// </summary>
+    /// <param name="email">The email to send the mail to.</param>
+    /// <returns>An <see cref="IdentityResult"/> with information about the operation.</returns>
+    public async Task<IdentityResult> SendPasswordForgotEmailAsync(string email)
+    {
+        var user = await userManager.FindByEmailAsync(email);
+        if (user is null)
+            return IdentityResult.Failed(userManager.ErrorDescriber.InvalidEmail(email));
+
+        if (!await userManager.IsEmailConfirmedAsync(user))
+            return IdentityResult.Failed(userManager.ErrorDescriber.InvalidEmail(email));
+
+        var resetCode = await userManager.GeneratePasswordResetTokenAsync(user);
+        resetCode = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(resetCode));
+
+        await emailSender.SendPasswordResetCodeAsync(user, email, HtmlEncoder.Default.Encode(resetCode));
+
+        return IdentityResult.Success;
     }
 }

@@ -1,8 +1,6 @@
 ﻿using Carter;
-using Microsoft.AspNetCore.Authentication.BearerToken;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 using TodoXpress.Api.Identity.DTOs;
 using TodoXpress.Api.Identity.Entities;
 using TodoXpress.Api.Identity.Services;
@@ -116,14 +114,34 @@ internal class IdentityEndpoints : ICarterModule
         return TypedResults.Ok(newLogin);
     }
 
-    public IResult ForgotPassword()
+    /// <summary>
+    /// Sends a forgot password mail.
+    /// </summary>
+    /// <param name="identity">The service to interact with </param>
+    /// <param name="forgotRequest">The request with the data.</param>
+    /// <returns>An Http status result.</returns>
+    public async Task<IResult> ForgotPassword(
+        [FromServices] IdentityService identity,
+        [FromBody] Microsoft.AspNetCore.Identity.Data.ForgotPasswordRequest forgotRequest)
     {
-        return Results.Ok();
+        var result = await identity.SendPasswordForgotEmailAsync(forgotRequest.Email);
+
+        if (!result.Succeeded)
+            return this.CreateValidationProblem(result);
+
+        return TypedResults.Ok();
     }
 
-    public IResult ResetPassword()
+    public async Task<IResult> ResetPassword(
+        [FromServices] IdentityService identity, 
+        [FromBody] Microsoft.AspNetCore.Identity.Data.ResetPasswordRequest resetRequest)
     {
-        return Results.Ok();
+        var result = await identity.ResetPasswordAsync(resetRequest.Email, resetRequest.ResetCode, resetRequest.NewPassword);
+        
+        if (!result.Succeeded)
+            return this.CreateValidationProblem(result);
+
+        return TypedResults.Ok();
     }
 
     public IResult ConfirmMail()
