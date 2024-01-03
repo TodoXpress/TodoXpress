@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace TodoXpress.Api.Identity.Entities;
 
-internal class Role : IdentityRole<Guid>
+public class Role : IdentityRole<Guid>
 {
     public const string DefaultUserRole = "default_user";
 

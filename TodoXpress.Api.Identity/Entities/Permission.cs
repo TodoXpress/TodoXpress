@@ -1,6 +1,6 @@
 ﻿namespace TodoXpress.Api.Identity.Entities;
 
-internal class Permission
+public class Permission
 {
     public Guid Id { get; set; }
 
@@ -9,14 +9,14 @@ internal class Permission
     public List<Scope> Scopes { get; set; } = [];
 }
 
-internal class Ressource
+public class Ressource
 {
     public Guid Id { get; set; }
 
     public string Value { get; set; } = string.Empty;
 }
 
-internal class Scope
+public class Scope
 {
     public Guid Id { get; set; }
 
