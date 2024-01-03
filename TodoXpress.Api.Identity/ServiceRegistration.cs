@@ -10,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using TodoXpress.Api.Identity.Entities;
 using TodoXpress.Api.Identity.Persistence;
 using TodoXpress.Api.Identity.Services;
+using TodoXpress.Api.Identity.Services.Interfaces;
 
 namespace TodoXpress.Api.Identity;
 
@@ -92,8 +93,8 @@ public static class ServiceRegistration
 
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
-        services.AddScoped<IdentityService>();
-        services.AddScoped<TokenService>();
+        services.AddScoped<IIdentityService, IdentityService>();
+        services.AddScoped<ITokenService, TokenService>();
         services.AddScoped<IEmailSender<User>>(sp => 
         {
             var config = sp.GetRequiredService<IConfiguration>();

@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TodoXpress.Api.Identity.DTOs;
 using TodoXpress.Api.Identity.Entities;
-using TodoXpress.Api.Identity.Services;
+using TodoXpress.Api.Identity.Services.Interfaces;
 
 namespace TodoXpress.Api.Identity.Endpoints;
 
-internal class IdentityEndpoints : ICarterModule
+public class IdentityEndpoints : ICarterModule
 {
     private string? confirmEmailEndpointName = null;
 
@@ -40,7 +40,7 @@ internal class IdentityEndpoints : ICarterModule
     /// <param name="context">The <see cref="HttpContext"/> of the request.</param>
     /// <returns>An Http status result.</returns>
     /// <exception cref="NotSupportedException">Thrown when the userstore don't support mail.</exception>
-    public async Task<IResult> RegisterAsync([FromServices] IdentityService identity, [FromBody] IdentityRequestBase registration, HttpContext context)
+    public async Task<IResult> RegisterAsync([FromServices] IIdentityService identity, [FromBody] IdentityRequestBase registration, HttpContext context)
     {
         if (!identity.SupportsUserEmail())
         {
@@ -75,8 +75,8 @@ internal class IdentityEndpoints : ICarterModule
     /// <param name="login">The request with the data.</param>
     /// <returns>An Http status result.</returns>
     public async Task<IResult> LoginAsync(
-        [FromServices] IdentityService identity, 
-        [FromServices] TokenService token, 
+        [FromServices] IIdentityService identity, 
+        [FromServices] ITokenService token, 
         [FromBody] LoginRequest login)
     {
         var (success, user) = await identity.LoginAsync(login.Email, login.Password);
@@ -92,16 +92,16 @@ internal class IdentityEndpoints : ICarterModule
     /// <summary>
     /// Refreshes the auth token with a refresh token
     /// </summary>
-    /// <param name="tokenService">The service to create tokens.</param>
+    /// <param name="ITokenService">The service to create tokens.</param>
     /// <param name="userManager">The service to interact with user entites.</param>
     /// <param name="refreshRequest">The request with the data.</param>
     /// <returns>An Http status result.</returns>
     public async Task<IResult> RefreshAsync(
-        [FromServices] TokenService tokenService, 
+        [FromServices] ITokenService ITokenService, 
         [FromServices] UserManager<User> userManager,
         [FromBody] RefreshTokenRequest refreshRequest)
     {
-        bool isValidToken = await tokenService.ValidateRefreshTokenasync(refreshRequest.RefreshToken, refreshRequest.UserId, refreshRequest.ClientId);
+        bool isValidToken = await ITokenService.ValidateRefreshTokenAsync(refreshRequest.RefreshToken, refreshRequest.UserId, refreshRequest.ClientId);
     
         if (!isValidToken)
             return TypedResults.Unauthorized();
@@ -110,7 +110,7 @@ internal class IdentityEndpoints : ICarterModule
         if (user is null)
             return TypedResults.Unauthorized();
 
-        var newLogin = await tokenService.RefreshAuthTokenForUser(refreshRequest.RefreshToken, user, refreshRequest.ClientId);
+        var newLogin = await ITokenService.RefreshAuthTokenForUser(refreshRequest.RefreshToken, user, refreshRequest.ClientId);
         return TypedResults.Ok(newLogin);
     }
 
@@ -121,7 +121,7 @@ internal class IdentityEndpoints : ICarterModule
     /// <param name="forgotRequest">The request with the data.</param>
     /// <returns>An Http status result.</returns>
     public async Task<IResult> ForgotPassword(
-        [FromServices] IdentityService identity,
+        [FromServices] IIdentityService identity,
         [FromBody] Microsoft.AspNetCore.Identity.Data.ForgotPasswordRequest forgotRequest)
     {
         var result = await identity.SendPasswordForgotEmailAsync(forgotRequest.Email);
@@ -133,7 +133,7 @@ internal class IdentityEndpoints : ICarterModule
     }
 
     public async Task<IResult> ResetPassword(
-        [FromServices] IdentityService identity, 
+        [FromServices] IIdentityService identity, 
         [FromBody] Microsoft.AspNetCore.Identity.Data.ResetPasswordRequest resetRequest)
     {
         var result = await identity.ResetPasswordAsync(resetRequest.Email, resetRequest.ResetCode, resetRequest.NewPassword);
