@@ -53,11 +53,14 @@ public static class ServiceRegistration
 
         services
             .AddIdentity<User, Role>()
+            .AddEntityFrameworkStores<IdentityContext>()
             .AddRoleStore<RoleStore<Role, IdentityContext, Guid>>()
             .AddRoleManager<RoleManager<Role>>()
             .AddUserStore<UserStore<User, Role, IdentityContext, Guid>>()
             .AddUserManager<UserManager<User>>()
-            .AddSignInManager();
+            .AddSignInManager()
+            .AddDefaultTokenProviders();
+
         return services;
     }
 
@@ -100,12 +103,20 @@ public static class ServiceRegistration
             var config = sp.GetRequiredService<IConfiguration>();
             var mail = config.GetSection("Mail");
 
-            return new EmailService(config["Email:FromAddress"] ?? string.Empty)
+            string from = mail.GetValue<string>("FromAddress") ?? string.Empty;
+            string host = mail.GetValue<string>("Host") ?? string.Empty;
+            int port = mail.GetValue<int>("Port");
+
+            string user = mail.GetValue<string>("User") ?? string.Empty;
+            string pwd = mail.GetValue<string>("Password") ?? string.Empty;
+
+            return new EmailService()
             {
-                Host = mail.GetValue<string>("Host") ?? string.Empty,
-                Port = mail.GetValue<int>("Port"),
-                Credentials = new NetworkCredential(mail.GetValue<string>("User"), mail.GetValue<string>("Password")),
-                EnableSsl = true
+                Host = host,
+                Port = port,
+                FromAddress = from,
+                Credentials = new NetworkCredential(user, pwd),
+                EnableSsl = false
             };
         });
 

@@ -116,9 +116,13 @@ internal sealed class IdentityService(
             throw new NotSupportedException("No email confirmation endpoint was registered!");
         }
 
-        var code = isChange
-            ? await userManager.GenerateChangeEmailTokenAsync(user, email)
-            : await userManager.GenerateEmailConfirmationTokenAsync(user);
+        string code = string.Empty; 
+        
+        if (isChange)
+            code = await userManager.GenerateChangeEmailTokenAsync(user, email);
+        else    
+            code = await userManager.GenerateEmailConfirmationTokenAsync(user);
+
         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
 
         var userId = await userManager.GetUserIdAsync(user);
