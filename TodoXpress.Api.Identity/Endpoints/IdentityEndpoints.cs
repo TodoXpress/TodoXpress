@@ -11,6 +11,7 @@ public class IdentityEndpoints : ICarterModule
 {
     private string? confirmEmailEndpointName = null;
 
+    /// <inheritdoc/>
     public void AddRoutes(IEndpointRouteBuilder app)
     {
         app.MapPut("register", RegisterAsync);
@@ -40,7 +41,10 @@ public class IdentityEndpoints : ICarterModule
     /// <param name="context">The <see cref="HttpContext"/> of the request.</param>
     /// <returns>An Http status result.</returns>
     /// <exception cref="NotSupportedException">Thrown when the userstore don't support mail.</exception>
-    public async Task<IResult> RegisterAsync([FromServices] IIdentityService identity, [FromBody] IdentityRequestBase registration, HttpContext context)
+    public async Task<IResult> RegisterAsync(
+        [FromServices] IIdentityService identity,
+        [FromBody] IdentityRequestBase registration,
+        HttpContext context)
     {
         if (!identity.SupportsUserEmail())
         {
@@ -132,6 +136,12 @@ public class IdentityEndpoints : ICarterModule
         return TypedResults.Ok();
     }
 
+    /// <summary>
+    /// Sets a new password for a user with the reset code.
+    /// </summary>
+    /// <param name="identity">The service to interact witch the aspnet identity services.</param>
+    /// <param name="resetRequest">The request with the data.</param>
+    /// <returns>An Http status result.</returns>
     public async Task<IResult> ResetPassword(
         [FromServices] IIdentityService identity, 
         [FromBody] Microsoft.AspNetCore.Identity.Data.ResetPasswordRequest resetRequest)
