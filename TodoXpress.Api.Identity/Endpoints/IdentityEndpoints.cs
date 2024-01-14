@@ -22,14 +22,14 @@ public class IdentityEndpoints : ICarterModule
         pwd.MapPost("reset", ResetPassword);
 
         var confirmation = app.MapGroup("confirm");
-        confirmation.MapGet("email", ConfirmMail)
+        confirmation.MapGet("email", ConfirmMailAsync)
             .Add(endpointBuilder =>
             {
                 var finalPattern = ((RouteEndpointBuilder)endpointBuilder).RoutePattern.RawText;
                 confirmEmailEndpointName = $"{nameof(AddRoutes)}-{finalPattern}";
                 endpointBuilder.Metadata.Add(new EndpointNameMetadata(confirmEmailEndpointName));
             });
-        confirmation.MapPost("resentemail", ResentConfirmation);
+        confirmation.MapPost("resentemail", ResentConfirmationAsync);
     }
 
     /// <summary>
@@ -40,7 +40,10 @@ public class IdentityEndpoints : ICarterModule
     /// <param name="context">The <see cref="HttpContext"/> of the request.</param>
     /// <returns>An Http status result.</returns>
     /// <exception cref="NotSupportedException">Thrown when the userstore don't support mail.</exception>
-    public async Task<IResult> RegisterAsync([FromServices] IIdentityService identity, [FromBody] IdentityRequestBase registration, HttpContext context)
+    public async Task<IResult> RegisterAsync(
+        [FromServices] IIdentityService identity,
+        [FromBody] IdentityRequestBase registration, 
+        HttpContext context)
     {
         if (!identity.SupportsUserEmail())
         {
@@ -117,7 +120,7 @@ public class IdentityEndpoints : ICarterModule
     /// <summary>
     /// Sends a forgot password mail.
     /// </summary>
-    /// <param name="identity">The service to interact with </param>
+    /// <param name="identity">The service to interact witch the aspnet identity services.</param>
     /// <param name="forgotRequest">The request with the data.</param>
     /// <returns>An Http status result.</returns>
     public async Task<IResult> ForgotPassword(
@@ -132,6 +135,12 @@ public class IdentityEndpoints : ICarterModule
         return TypedResults.Ok();
     }
 
+    /// <summary>
+    /// Resets the password from a user.
+    /// </summary>
+    /// <param name="identity">The service to interact witch the aspnet identity services.</param>
+    /// <param name="resetRequest">The request with the data to reset a password.</param>
+    /// <returns>An Http status result.</returns>
     public async Task<IResult> ResetPassword(
         [FromServices] IIdentityService identity, 
         [FromBody] Microsoft.AspNetCore.Identity.Data.ResetPasswordRequest resetRequest)
@@ -144,13 +153,57 @@ public class IdentityEndpoints : ICarterModule
         return TypedResults.Ok();
     }
 
-    public IResult ConfirmMail()
+    /// <summary>
+    /// Confirms a email adress of a user.
+    /// </summary>
+    /// <param name="identity">The service to interact witch the aspnet identity services.</param>
+    /// <param name="userId">The id of the user.</param>
+    /// <param name="code">The confirmation code.</param>
+    /// <param name="changedEmail">If set, the new email address.</param>
+    /// <returns>An Http status result.</returns>
+    public async Task<IResult> ConfirmMailAsync(
+        [FromServices] IIdentityService identity,
+        [FromQuery] string userId, [FromQuery] string code, [FromQuery] string? changedEmail
+    )
     {
-        return Results.Ok();
+        IdentityResult result;
+
+        if (string.IsNullOrEmpty(changedEmail))
+        {
+            result = await identity.ConfirmEmailAsync(userId, code);
+        }
+        else
+        {
+            result = await identity.ChangeEmailAsync(userId, changedEmail, code);
+        }
+
+        if (!result.Succeeded)
+            return this.CreateValidationProblem(result);
+
+        return TypedResults.Ok();
     }
 
-    public IResult ResentConfirmation()
+    /// <summary>
+    /// Resents the email to confirm the email address.
+    /// </summary>
+    /// <param name="identity">The service to interact witch the aspnet identity services.</param>
+    /// <param name="userManager">The usermanager to fetch the user from.</param>
+    /// <param name="request">The request with the data for resending the confirmation.</param>
+    /// <param name="context">The <see cref="HttpContext"/> of the current request.</param>
+    /// <returns>An Http status result.</returns>
+    public async Task<IResult> ResentConfirmationAsync(
+        [FromServices] IIdentityService identity,
+        [FromServices] UserManager<User> userManager,
+        [FromBody] Microsoft.AspNetCore.Identity.Data.ResendConfirmationEmailRequest request,
+        HttpContext context
+    )
     {
-        return Results.Ok();
+        var user = await userManager.FindByEmailAsync(request.Email);
+        if (user is null)
+            return TypedResults.NotFound("invalid email address: " + request.Email);
+
+        await identity.SendConfirmationEmailAsync(user!, context, confirmEmailEndpointName!, user!.Email!);
+
+        return TypedResults.Ok();
     }
 }

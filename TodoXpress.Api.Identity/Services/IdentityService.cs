@@ -108,6 +108,39 @@ internal sealed class IdentityService(
     }
 
     /// <inheritdoc/>
+    public async Task<IdentityResult> ConfirmEmailAsync(string userId, string confirmationCode)
+    {
+        var user = await userManager.FindByIdAsync(userId);
+        if (user is null)
+            return IdentityResult.Failed(userManager.ErrorDescriber.InvalidUserName(userId));
+
+        var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(confirmationCode));
+        var result = await userManager.ConfirmEmailAsync(user, decodedToken);
+
+        return result;
+    }
+
+    /// <inheritdoc/>
+    public async Task<IdentityResult> ChangeEmailAsync(string userId, string email, string confirmationCode)
+    {
+        var user = await userManager.FindByIdAsync(userId);
+        if (user is null)
+            return IdentityResult.Failed(userManager.ErrorDescriber.InvalidUserName(userId));
+        
+        string? oldEmail = user.NormalizedEmail;
+        var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(confirmationCode));
+        var result = await userManager.ChangeEmailAsync(user, email, decodedToken);
+
+        if (!result.Succeeded)
+            return IdentityResult.Failed(result.Errors.ToArray());
+
+        if (Equals(oldEmail, user.NormalizedUserName))
+            result = await userManager.SetUserNameAsync(user, email);
+
+        return result;
+    }
+
+    /// <inheritdoc/>
     public async Task SendConfirmationEmailAsync(User user, HttpContext context, string confirmEmailEndpointName, string email, bool isChange = false)
     {
         
@@ -116,8 +149,7 @@ internal sealed class IdentityService(
             throw new NotSupportedException("No email confirmation endpoint was registered!");
         }
 
-        string code = string.Empty; 
-        
+        string code;
         if (isChange)
             code = await userManager.GenerateChangeEmailTokenAsync(user, email);
         else    

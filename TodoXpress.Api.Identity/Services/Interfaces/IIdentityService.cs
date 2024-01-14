@@ -51,6 +51,23 @@ public interface IIdentityService
     Task<IdentityResult> ResetPasswordAsync(string email, string code, string newPassword);
 
     /// <summary>
+    /// Confirms the email address of an user.
+    /// </summary>
+    /// <param name="userId">The id of an user that needs to confirm the email address.</param>
+    /// <param name="confirmationCode">The confirmation code.</param>
+    /// <returns></returns>
+    Task<IdentityResult> ConfirmEmailAsync(string userId, string confirmationCode);
+
+    /// <summary>
+    /// Changes the email of an user.
+    /// </summary>
+    /// <param name="userId">The id of an user that needs to confirm the email address.</param>
+    /// <param name="email">The new email address.</param>
+    /// <param name="confirmationCode">The confirmation code.</param>
+    /// <returns></returns>
+    Task<IdentityResult> ChangeEmailAsync(string userId, string email, string confirmationCode);
+
+    /// <summary>
     /// Send a mail to confirm an email address.
     /// </summary>
     /// <param name="user">The user for which the email should be send.</param>
