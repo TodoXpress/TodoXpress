@@ -30,4 +30,12 @@ public interface ITokenService
     /// <param name="clientId">The id of the client.</param>
     /// <returns>A bool indicating wheather the token is valid or not.</returns>
     Task<bool> ValidateRefreshTokenAsync(string token, Guid userId, Guid clientId);
+
+    /// <summary>
+    /// Invalidates an existing refresh token.
+    /// </summary>
+    /// <param name="userId">The user, to whom the token belongs to.</param>
+    /// <param name="refreshToken">The refresh token.</param>
+    /// <returns>A bool indication wheather the token is successfully invalidated or not.</returns>
+    Task<bool> InvalidateRefreshTokenAsync(string userId, string refreshToken);
 }

@@ -3,11 +3,11 @@
 /// <summary>
 /// Represents the response from a login.
 /// </summary>
-public readonly record struct LoginResponse
+public record struct LoginResponse
 {
-    public string Token { get; init; }
+    public string Token { get; set; }
 
-    public DateTime ExpirationTime { get; init; }
+    public DateTime ExpirationTime { get; set; }
 
-    public string RefreshToken { get; init; }
+    public string RefreshToken { get; set; }
 }

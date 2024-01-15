@@ -15,6 +15,8 @@ public class IdentityEndpoints : ICarterModule
     {
         app.MapPut("register", RegisterAsync);
         app.MapPost("login", LoginAsync);
+        app.MapPost("logout", LogoutAsync);
+
         app.MapPost("refresh", RefreshAsync);
 
         var pwd = app.MapGroup("password");
@@ -85,11 +87,21 @@ public class IdentityEndpoints : ICarterModule
         var (success, user) = await identity.LoginAsync(login.Email, login.Password);
 
         if (!success)
-            return TypedResults.Problem("Login fehlgeschlagen.");
+            return TypedResults.Problem("Login failed.");
 
         var loginResponse = await token.CreateAuthTokenForUser(user!, login.ClientId);
 
         return TypedResults.Ok(loginResponse);
+    }
+
+    public async Task<IResult> LogoutAsync([FromServices] ITokenService token, LogoutRequest request)
+    {
+        bool success = await token.InvalidateRefreshTokenAsync(request.UserId, request.RefreshToken);
+
+        if (!success)
+            return TypedResults.BadRequest("Invalid userid or token");
+
+        return TypedResults.Ok();
     }
 
     /// <summary>

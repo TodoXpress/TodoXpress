@@ -1,0 +1,7 @@
+﻿namespace TodoXpress.Api.Identity;
+
+public record struct LogoutRequest
+{
+    public string UserId { get; set; }
+    public string RefreshToken { get; set; }
+}
