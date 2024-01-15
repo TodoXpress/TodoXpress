@@ -52,6 +52,23 @@ internal class TokenService(
             refreshToken.ExpiryDate > DateTime.UtcNow;
     }
 
+    /// <inheritdoc/>
+    public async Task<bool> InvalidateRefreshTokenAsync(string userId, string refreshToken)
+    {
+        var token = await context.RefreshTokens
+            .FirstOrDefaultAsync(rt => Equals(rt.UserId, userId) && Equals(rt.Token, refreshToken));
+
+        if (token == null)
+        {
+            return false; // Token nicht gefunden
+        }
+
+        context.Set<RefreshToken>().Remove(token);
+        await context.SaveChangesAsync();
+
+        return true;
+    }
+
     private async Task<(string token, DateTime expires)> GenerateJwtTokenAsync(User user)
     {
         var tokenHandler = new JwtSecurityTokenHandler();
