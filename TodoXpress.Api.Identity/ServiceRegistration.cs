@@ -120,6 +120,10 @@ public static class ServiceRegistration
             };
         });
 
+        services.AddScoped<DataService<Permission>, DataService<Permission>>();
+        services.AddScoped<DataService<Ressource>, DataService<Ressource>>();
+        services.AddScoped<DataService<Scope>, DataService<Scope>>();
+
         return services;
     }
 }

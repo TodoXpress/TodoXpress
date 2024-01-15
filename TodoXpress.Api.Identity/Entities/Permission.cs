@@ -1,6 +1,6 @@
 ﻿namespace TodoXpress.Api.Identity.Entities;
 
-public class Permission
+public class Permission : IIdentifieable
 {
     public Guid Id { get; set; }
 
@@ -9,14 +9,14 @@ public class Permission
     public List<Scope> Scopes { get; set; } = [];
 }
 
-public class Ressource
+public class Ressource : IIdentifieable
 {
     public Guid Id { get; set; }
 
     public string Value { get; set; } = string.Empty;
 }
 
-public class Scope
+public class Scope : IIdentifieable
 {
     public Guid Id { get; set; }
 
