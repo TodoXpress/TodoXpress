@@ -1,4 +1,6 @@
 ﻿using Carter;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using TodoXpress.Api.Identity.Entities;
 
 namespace TodoXpress.Api.Identity.Endpoints;
@@ -12,8 +14,8 @@ public class PermissionsEndpoint : ICarterModule
         MapCRUD<Role>(roles);
         // Map endpoints for manage permissions of a role
         var perm = roles.MapGroup("{roleId:guid}/permission/{id:guid}");
-        perm.MapPut("", AssignPermission);
-        perm.MapDelete("", RemovePermission);
+        perm.MapPut("", AssignPermissionAsync);
+        perm.MapDelete("", RemovePermissionAsync);
 
         // map permission endpoints
         var permissions = app.MapGroup("permissions");
@@ -30,47 +32,94 @@ public class PermissionsEndpoint : ICarterModule
 
     public IEndpointRouteBuilder MapCRUD<TType>(IEndpointRouteBuilder route)
     {
-        route.MapGet("", GetAll<TType>);
-        route.MapGet("{id:guid}", Get<TType>);
-        route.MapPut("", Create<TType>);
-        route.MapPost("", Update<TType>);
-        route.MapDelete("", Delete<TType>);
+        route.MapGet("", GetAllAsync<TType>);
+        route.MapGet("{id:guid}", GetAsync<TType>);
+        route.MapPut("", CreateAsync<TType>);
+        route.MapPost("", UpdateAsync<TType>);
+        route.MapDelete("{id:guid}", DeleteAsync<TType>);
 
         return route;
     }
 
-    public IResult AssignPermission(Guid id)
+    public async Task<IResult> AssignPermissionAsync(
+        [FromServices] RoleManager<Role> roleManager,
+        [FromServices] IDataService<Permission> permissions,
+        [FromRoute] Guid roleId,
+        [FromRoute] Guid id)
     {
+        var role = await roleManager.FindByIdAsync(roleId.ToString());
+        if (role is null)
+            return TypedResults.BadRequest("role identifier is invalid");
+
+        var permission = await permissions.GetAsync(id);
+        if (permission is null)
+            return TypedResults.BadRequest("permission identifier is invalid");
+
+        role.Permissions.Add(permission);
+        await roleManager.UpdateAsync(role);
+
+        return TypedResults.Ok();
+    }
+
+    public async Task<IResult> RemovePermissionAsync(
+        [FromServices] RoleManager<Role> roleManager,
+        [FromServices] IDataService<Permission> permissions,
+        [FromRoute] Guid roleId,
+        [FromRoute] Guid id
+    )
+    {
+        var role = await roleManager.FindByIdAsync(roleId.ToString());
+        if (role is null)
+            return TypedResults.BadRequest("role identifier is invalid");
+
+        var permission = await permissions.GetAsync(id);
+        if (permission is null)
+            return TypedResults.BadRequest("permission identifier is invalid");
+
+        role.Permissions.Remove(permission);
+        await roleManager.UpdateAsync(role);
+
+        return TypedResults.Ok();
+    }
+
+    public async Task<IResult> GetAllAsync<T>([FromServices] IDataService<T> dataService)
+    {
+        return TypedResults.Ok(await dataService.GetAllAsync());
+    }
+
+    public async Task<IResult> GetAsync<T>([FromServices] IDataService<T> dataService, [FromRoute] Guid id)
+    {
+        var result = await dataService.GetAsync(id);
+        if (result is null)
+            return TypedResults.NotFound();
+
+        return TypedResults.Ok(result);
+    }
+
+    public async Task<IResult> CreateAsync<T>([FromServices] IDataService<T> dataService, [FromBody] T entity)
+    {
+        bool success = await dataService.CreateAsync(entity);
+        if (!success)
+            return TypedResults.StatusCode(StatusCodes.Status500InternalServerError);
+        
+        return TypedResults.Ok();
+    }
+
+    public async Task<IResult> UpdateAsync<T>([FromServices] IDataService<T> dataService, [FromBody] T entity)
+    {
+        bool success = await dataService.Update(entity);
+        if (!success)
+            return TypedResults.StatusCode(StatusCodes.Status500InternalServerError);
+
         return Results.Ok();
     }
 
-    public IResult RemovePermission(Guid id)
+    public async Task<IResult> DeleteAsync<T>([FromServices] IDataService<T> dataService, [FromRoute] Guid id)
     {
-        return Results.Ok();
-    }
+        bool success = await dataService.DeleteAsync(id);
+        if (!success)
+            return TypedResults.StatusCode(StatusCodes.Status500InternalServerError);
 
-    public IResult Get<T>()
-    {
-        return Results.Ok();
-    }
-
-    public IResult GetAll<T>()
-    {
-        return Results.Ok();
-    }
-
-    public IResult Create<T>()
-    {
-        return Results.Ok();
-    }
-
-    public IResult Update<T>()
-    {
-        return Results.Ok();
-    }
-
-    public IResult Delete<T>()
-    {
         return Results.Ok();
     }
 }

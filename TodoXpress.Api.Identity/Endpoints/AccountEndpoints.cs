@@ -1,4 +1,7 @@
 ﻿using Carter;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using TodoXpress.Api.Identity.Entities;
 
 namespace TodoXpress.Api.Identity.Endpoints;
 
@@ -11,8 +14,8 @@ public class AccountEndpoints : ICarterModule
         acc.MapPost("", UpdateInfos);
 
         var perm = acc.MapGroup("role");
-        perm.MapPut("{roleId:guid}", AssignRole);
-        perm.MapDelete("{roleId:guid}", RemoveRole);
+        perm.MapPut("{roleId:guid}", AssignRoleAsync);
+        perm.MapDelete("{roleId:guid}", RemoveRoleAsync);
     }
 
     public static IResult GetInfos()
@@ -25,13 +28,52 @@ public class AccountEndpoints : ICarterModule
         return Results.Ok();
     }
 
-    public IResult AssignRole(Guid roleId)
+    public async Task<IResult> AssignRoleAsync(
+        [FromServices] UserManager<User> userManager,
+        [FromServices] RoleManager<Role> roleManager,
+        Guid roleId, 
+        Guid id)
     {
-        return Results.Ok();
+         var user = await userManager.FindByIdAsync(id.ToString());
+        if (user is null)
+            return TypedResults.NotFound("User not found.");
+
+        var role = await roleManager.FindByIdAsync(roleId.ToString());
+        if (role is null)
+            return TypedResults.NotFound("Role not found.");
+
+        var result = await userManager.AddToRoleAsync(user, role.Name!);
+        if (!result.Succeeded)
+            return TypedResults.StatusCode(StatusCodes.Status500InternalServerError);
+
+        return TypedResults.Ok();
     }
 
-    public IResult RemoveRole(Guid roleId)
+    public async Task<IResult> RemoveRoleAsync(
+        [FromServices] UserManager<User> userManager,
+        [FromServices] RoleManager<Role> roleManager,
+        Guid roleId, 
+        Guid id
+    )
     {
-        return Results.Ok();
+        var user = await userManager.FindByIdAsync(id.ToString());
+        if (user is null)
+        {
+            return TypedResults.NotFound("User not found.");
+        }
+
+        var role = await roleManager.FindByIdAsync(roleId.ToString());
+        if (role == null)
+        {
+            return TypedResults.NotFound("Role not found.");
+        }
+
+        var result = await userManager.RemoveFromRoleAsync(user, role.Name!);
+        if (!result.Succeeded)
+        {
+            return TypedResults.StatusCode(StatusCodes.Status500InternalServerError);
+        }
+
+        return TypedResults.Ok();
     }
 }
