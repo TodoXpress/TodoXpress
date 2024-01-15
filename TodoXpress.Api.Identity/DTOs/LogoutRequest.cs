@@ -1,4 +1,4 @@
-﻿namespace TodoXpress.Api.Identity;
+﻿namespace TodoXpress.Api.Identity.DTOs;
 
 public record struct LogoutRequest
 {
