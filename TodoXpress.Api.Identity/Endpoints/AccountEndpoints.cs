@@ -18,16 +18,32 @@ public class AccountEndpoints : ICarterModule
         perm.MapDelete("{roleId:guid}", RemoveRoleAsync);
     }
 
+    /// <summary>
+    /// Return informations about the account.
+    /// </summary>
+    /// <returns>An Http status result.</returns>
     public static IResult GetInfos()
     {
         return Results.Ok();
     }
 
+    /// <summary>
+    /// Updates informations of the account.
+    /// </summary>
+    /// <returns>An Http status result.</returns>
     public IResult UpdateInfos()
     {
         return Results.Ok();
     }
 
+    /// <summary>
+    /// Adds a user to a role.
+    /// </summary>
+    /// <param name="userManager">The service for the users.</param>
+    /// <param name="roleManager">The service for the roles.</param>
+    /// <param name="roleId">The identifier of the role.</param>
+    /// <param name="id">The identifier of the user.</param>
+    /// <returns>An Http status result.</returns>
     public async Task<IResult> AssignRoleAsync(
         [FromServices] UserManager<User> userManager,
         [FromServices] RoleManager<Role> roleManager,
@@ -49,6 +65,14 @@ public class AccountEndpoints : ICarterModule
         return TypedResults.Ok();
     }
 
+    /// <summary>
+    /// Removes a user from a role.
+    /// </summary>
+    /// <param name="userManager">The service for the users.</param>
+    /// <param name="roleManager">The service for the roles.</param>
+    /// <param name="roleId">The identifier of the role.</param>
+    /// <param name="id">The identifier of the user.</param>
+    /// <returns>An Http status result.</returns>
     public async Task<IResult> RemoveRoleAsync(
         [FromServices] UserManager<User> userManager,
         [FromServices] RoleManager<Role> roleManager,
@@ -63,7 +87,7 @@ public class AccountEndpoints : ICarterModule
         }
 
         var role = await roleManager.FindByIdAsync(roleId.ToString());
-        if (role == null)
+        if (role is null)
         {
             return TypedResults.NotFound("Role not found.");
         }

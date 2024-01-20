@@ -41,6 +41,14 @@ public class PermissionsEndpoint : ICarterModule
         return route;
     }
 
+    /// <summary>
+    /// Adds a permission to a role.
+    /// </summary>
+    /// <param name="roleManager">The service for the roles.</param>
+    /// <param name="permissions">The service for the permissions.</param>
+    /// <param name="roleId">The identifier of the role.</param>
+    /// <param name="id">The identifier of the permission to add.</param>
+    /// <returns>An Http status result.</returns>
     public async Task<IResult> AssignPermissionAsync(
         [FromServices] RoleManager<Role> roleManager,
         [FromServices] IDataService<Permission> permissions,
@@ -61,6 +69,14 @@ public class PermissionsEndpoint : ICarterModule
         return TypedResults.Ok();
     }
 
+    /// <summary>
+    /// Removes a permission from a role.
+    /// </summary>
+    /// <param name="roleManager">The service for the roles.</param>
+    /// <param name="permissions">The service for the permissions.</param>
+    /// <param name="roleId">The identifier of the role.</param>
+    /// <param name="id">The identifier of the permission to remove.</param>
+    /// <returns>An Http status result.</returns>
     public async Task<IResult> RemovePermissionAsync(
         [FromServices] RoleManager<Role> roleManager,
         [FromServices] IDataService<Permission> permissions,
@@ -82,11 +98,24 @@ public class PermissionsEndpoint : ICarterModule
         return TypedResults.Ok();
     }
 
+    /// <summary>
+    /// Fetches all entites of a type.
+    /// </summary>
+    /// <typeparam name="T">The type of the entity.</typeparam>
+    /// <param name="dataService">The service to fetch the entites.</param>
+    /// <returns>An Http status result.</returns>
     public async Task<IResult> GetAllAsync<T>([FromServices] IDataService<T> dataService)
     {
         return TypedResults.Ok(await dataService.GetAllAsync());
     }
 
+    /// <summary>
+    /// Fetches a single entity.
+    /// </summary>
+    /// <typeparam name="T">The type of the entity.</typeparam>
+    /// <param name="dataService">The service to fetch the entites.</param>
+    /// <param name="id">The identifier of the entity.</param>
+    /// <returns>An Http status result.</returns>
     public async Task<IResult> GetAsync<T>([FromServices] IDataService<T> dataService, [FromRoute] Guid id)
     {
         var result = await dataService.GetAsync(id);
@@ -96,6 +125,13 @@ public class PermissionsEndpoint : ICarterModule
         return TypedResults.Ok(result);
     }
 
+    /// <summary>
+    /// Adds a new entity to the collection.
+    /// </summary>
+    /// <typeparam name="T">The type of the entity.</typeparam>
+    /// <param name="dataService">The service to fetch the entites.</param>
+    /// <param name="entity">The entity to add.</param>
+    /// <returns>An Http status result.</returns>
     public async Task<IResult> CreateAsync<T>([FromServices] IDataService<T> dataService, [FromBody] T entity)
     {
         bool success = await dataService.CreateAsync(entity);
@@ -105,6 +141,13 @@ public class PermissionsEndpoint : ICarterModule
         return TypedResults.Ok();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T">The type of the entity.</typeparam>
+    /// <param name="dataService">The service to fetch the entites.</param>
+    /// <param name="entity">The entity to update.</param>
+    /// <returns>An Http status result.</returns>
     public async Task<IResult> UpdateAsync<T>([FromServices] IDataService<T> dataService, [FromBody] T entity)
     {
         bool success = await dataService.Update(entity);
@@ -114,6 +157,13 @@ public class PermissionsEndpoint : ICarterModule
         return Results.Ok();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <typeparam name="T">The type of the entity.</typeparam>
+    /// <param name="dataService">The service to fetch the entites.</param>
+    /// <param name="id">The identifier of the entity.</param>
+    /// <returns>An Http status result.</returns>
     public async Task<IResult> DeleteAsync<T>([FromServices] IDataService<T> dataService, [FromRoute] Guid id)
     {
         bool success = await dataService.DeleteAsync(id);
