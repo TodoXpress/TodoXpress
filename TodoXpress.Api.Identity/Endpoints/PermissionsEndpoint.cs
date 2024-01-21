@@ -181,7 +181,7 @@ public class PermissionsEndpoint : ICarterModule
     }
 
     /// <summary>
-    /// 
+    /// Updates an entity with the given request.
     /// </summary>
     /// <typeparam name="T">The type of the entity.</typeparam>
     /// <param name="dataService">The service to fetch the entites.</param>
@@ -200,7 +200,7 @@ public class PermissionsEndpoint : ICarterModule
     }
 
     /// <summary>
-    /// 
+    /// Deletes an entity from the database.
     /// </summary>
     /// <typeparam name="T">The type of the entity.</typeparam>
     /// <param name="dataService">The service to fetch the entites.</param>
