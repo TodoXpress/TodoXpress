@@ -64,7 +64,7 @@ internal class TokenService(
             return false; // Token nicht gefunden
         }
 
-        var entity = context.Set<RefreshToken>().Remove(token);
+        var entity = context.RefreshTokens.Remove(token);
         int effectedRows = await context.SaveChangesAsync();
 
         return entity.State == EntityState.Deleted && effectedRows > 0;
@@ -85,8 +85,8 @@ internal class TokenService(
         {
             IssuedAt = DateTime.UtcNow,
             Expires = expirationTime,
-            Issuer = config["Issuer"],
-            Audience = config["Audience"],
+            Issuer = config["Jwt:Issuer"],
+            Audience = config["Jwt:Audience"],
             TokenType = "JWT",
             CompressionAlgorithm =SecurityAlgorithms.HmacSha256Signature,
             Subject = new ClaimsIdentity(new[] 
@@ -95,37 +95,30 @@ internal class TokenService(
             }),
             Claims = new Dictionary<string, object>()
             {
-                { ClaimTypes.NameIdentifier, user.Id.ToString() },
                 { ClaimTypes.Email, user.Email ?? string.Empty },
                 { ClaimTypes.Name, user.UserName ?? string.Empty },
-                { ClaimTypes.Expiration, expirationTimeInMin.ToString() },
-                { ClaimTypes.Version, config["Version"] ?? string.Empty },
+                { ClaimTypes.Version, config["ApiInfos:Version"] ?? string.Empty },
             },
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         };
 
-        List<RoleDTO> rolesFromUser = [];
+        Dictionary<string, object> rolesFromUser = [];
         foreach (var roleName in await userManager.GetRolesAsync(user))
         {
-            var role = roleManager.Roles
-                .Select(r => new RoleDTO
-                {
-                    Name = r.Name ?? string.Empty,
-                    Permissions = r.Permissions
-                        .Select(p => new PermissionDTO
-                        {
-                            Ressource = p.Ressource.Value,
-                            Scopes = p.Scopes.Select(s => s.Value)
-                                .ToList()
-                        })
-                        .ToList(),
-                })
-                .SingleOrDefault(r => Equals(r.Name, roleName));
+            var role = await roleManager.FindByNameAsync(roleName);
+            if (role is null)
+                continue;
 
-            rolesFromUser.Add(role);
+            var permissionsClaims = role.Permissions.Select(p => new Dictionary<string, object>
+            {
+                { "Ressource", p.Ressource.Value },
+                { "Scopes", p.Scopes.Select(s => s.Value).ToList() }
+            }).ToList();
+
+            rolesFromUser.Add(role.Name ?? role.Id.ToString(), permissionsClaims);
         }
 
-        tokenDescriptor.Claims.Add(ClaimTypes.Role, JsonSerializer.Serialize(rolesFromUser));
+        tokenDescriptor.Claims.Add(ClaimTypes.Role, rolesFromUser);
         var token = tokenHandler.CreateToken(tokenDescriptor);
 
         var serializedToken = tokenHandler.WriteToken(token);
@@ -134,6 +127,8 @@ internal class TokenService(
 
     private async Task<string> GenerateRefreshTokenAsync(User user, Guid clientId)
     {
+        await this.InvalidateRefreshTokenAsync(user.Id, clientId);
+
         if(!int.TryParse(config["RefreshTokenExirationInMinutes"], out int refTokenExpirationMinutes))
         {
             refTokenExpirationMinutes = 3600;
