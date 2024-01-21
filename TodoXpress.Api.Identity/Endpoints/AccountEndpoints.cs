@@ -14,8 +14,17 @@ public class AccountEndpoints : ICarterModule
         acc.MapPost("", UpdateInfos);
 
         var perm = acc.MapGroup("role");
-        perm.MapPut("{roleId:guid}", AssignRoleAsync);
-        perm.MapDelete("{roleId:guid}", RemoveRoleAsync);
+        perm.MapPut("{roleId:guid}", AssignRoleAsync)
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .Produces(StatusCodes.Status500InternalServerError)
+            .WithOpenApi();
+
+        perm.MapDelete("{roleId:guid}", RemoveRoleAsync)
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .Produces(StatusCodes.Status500InternalServerError)
+            .WithOpenApi();
     }
 
     /// <summary>
@@ -47,8 +56,8 @@ public class AccountEndpoints : ICarterModule
     public async Task<IResult> AssignRoleAsync(
         [FromServices] UserManager<User> userManager,
         [FromServices] RoleManager<Role> roleManager,
-        Guid roleId, 
-        Guid id)
+        [FromRoute] Guid roleId, 
+        [FromRoute] Guid id)
     {
          var user = await userManager.FindByIdAsync(id.ToString());
         if (user is null)
@@ -76,8 +85,8 @@ public class AccountEndpoints : ICarterModule
     public async Task<IResult> RemoveRoleAsync(
         [FromServices] UserManager<User> userManager,
         [FromServices] RoleManager<Role> roleManager,
-        Guid roleId, 
-        Guid id
+        [FromRoute] Guid roleId, 
+        [FromRoute] Guid id
     )
     {
         var user = await userManager.FindByIdAsync(id.ToString());

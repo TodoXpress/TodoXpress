@@ -1,4 +1,5 @@
-﻿using Carter;
+﻿using Media = System.Net.Mime.MediaTypeNames;
+using Carter;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TodoXpress.Api.Identity.DTOs;
@@ -14,26 +15,66 @@ public class IdentityEndpoints : ICarterModule
     /// <inheritdoc/>
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        app.MapPut("register", RegisterAsync);
-        app.MapPost("login", LoginAsync);
-        app.MapPost("logout", LogoutAsync);
-        app.MapDelete("delete", DeleteUserAsync);
+        app.MapPut("register", RegisterAsync)
+            .Accepts<IdentityRequestBase>(Media.Application.Json)
+            .Produces(StatusCodes.Status200OK)
+            .ProducesValidationProblem()
+            .WithOpenApi();
 
-        app.MapPost("refresh", RefreshAsync);
+        app.MapPost("login", LoginAsync)
+            .Accepts<LoginRequest>(Media.Application.Json)
+            .Produces<LoginResponse>(StatusCodes.Status200OK)
+            .ProducesValidationProblem()
+            .WithOpenApi();
 
+        app.MapPost("logout", LogoutAsync)
+            .Accepts<LogoutRequest>(Media.Application.Json)
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status400BadRequest)
+            .WithOpenApi();
+
+        app.MapDelete("delete/{userId:Guid}", DeleteUserAsync)
+            .Produces(StatusCodes.Status200OK)
+            .ProducesValidationProblem()
+            .WithOpenApi();
+
+        app.MapPost("refresh", RefreshAsync)
+            .Accepts<RefreshTokenRequest>(Media.Application.Json)
+            .Produces<LoginResponse>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized)
+            .WithOpenApi();
+
+        // password endpoints
         var pwd = app.MapGroup("password");
-        pwd.MapPost("forgot", ForgotPassword);
-        pwd.MapPost("reset", ResetPassword);
+        pwd.MapPost("forgot", ForgotPassword)
+            .Accepts<Microsoft.AspNetCore.Identity.Data.ForgotPasswordRequest>(Media.Application.Json)
+            .Produces(StatusCodes.Status200OK)
+            .ProducesValidationProblem()
+            .WithOpenApi();
+        pwd.MapPost("reset", ResetPassword)
+            .Accepts<Microsoft.AspNetCore.Identity.Data.ResetPasswordRequest>(Media.Application.Json)
+            .Produces(StatusCodes.Status200OK)
+            .ProducesValidationProblem()
+            .WithOpenApi();
 
+        // confirmation endpoints
         var confirmation = app.MapGroup("confirm");
         confirmation.MapGet("email", ConfirmMailAsync)
+            .Produces(StatusCodes.Status200OK)
+            .ProducesValidationProblem()
+            .WithOpenApi()
             .Add(endpointBuilder =>
             {
                 var finalPattern = ((RouteEndpointBuilder)endpointBuilder).RoutePattern.RawText;
                 confirmEmailEndpointName = $"{nameof(AddRoutes)}-{finalPattern}";
                 endpointBuilder.Metadata.Add(new EndpointNameMetadata(confirmEmailEndpointName));
             });
-        confirmation.MapPost("resentemail", ResentConfirmationAsync);
+
+        confirmation.MapPost("resentemail", ResentConfirmationAsync)
+            .Accepts<Microsoft.AspNetCore.Identity.Data.ResendConfirmationEmailRequest>(Media.Application.Json)
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .WithOpenApi();
     }
 
     /// <summary>

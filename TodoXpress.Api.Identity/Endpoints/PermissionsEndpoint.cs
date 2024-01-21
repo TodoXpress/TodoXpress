@@ -1,4 +1,5 @@
-﻿using Carter;
+﻿using Media = System.Net.Mime.MediaTypeNames;
+using Carter;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TodoXpress.Api.Identity.Entities;
@@ -14,8 +15,15 @@ public class PermissionsEndpoint : ICarterModule
         MapCRUD<Role>(roles);
         // Map endpoints for manage permissions of a role
         var perm = roles.MapGroup("{roleId:guid}/permission/{id:guid}");
-        perm.MapPut("", AssignPermissionAsync);
-        perm.MapDelete("", RemovePermissionAsync);
+        perm.MapPut("", AssignPermissionAsync)
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .WithOpenApi();
+
+        perm.MapDelete("", RemovePermissionAsync)
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .WithOpenApi();
 
         // map permission endpoints
         var permissions = app.MapGroup("permissions");
@@ -30,13 +38,33 @@ public class PermissionsEndpoint : ICarterModule
         MapCRUD<Scope>(scopes);
     }
 
-    public IEndpointRouteBuilder MapCRUD<TType>(IEndpointRouteBuilder route)
+    public IEndpointRouteBuilder MapCRUD<TType>(IEndpointRouteBuilder route) where TType : notnull
     {
-        route.MapGet("", GetAllAsync<TType>);
-        route.MapGet("{id:guid}", GetAsync<TType>);
-        route.MapPut("", CreateAsync<TType>);
-        route.MapPost("", UpdateAsync<TType>);
-        route.MapDelete("{id:guid}", DeleteAsync<TType>);
+        route.MapGet("", GetAllAsync<TType>)
+            .Produces<IEnumerable<TType>>(StatusCodes.Status200OK)
+            .WithOpenApi();
+
+        route.MapGet("{id:guid}", GetAsync<TType>)
+            .Produces<TType>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound)
+            .WithOpenApi();
+
+        route.MapPut("", CreateAsync<TType>)
+            .Accepts<TType>(Media.Application.Json)
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status500InternalServerError)
+            .WithOpenApi();
+
+        route.MapPost("", UpdateAsync<TType>)
+            .Accepts<TType>(Media.Application.Json)
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status500InternalServerError)
+            .WithOpenApi();
+
+        route.MapDelete("{id:guid}", DeleteAsync<TType>)
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status500InternalServerError)
+            .WithOpenApi();
 
         return route;
     }
@@ -57,11 +85,11 @@ public class PermissionsEndpoint : ICarterModule
     {
         var role = await roleManager.FindByIdAsync(roleId.ToString());
         if (role is null)
-            return TypedResults.BadRequest("role identifier is invalid");
+            return TypedResults.NotFound("role identifier is invalid");
 
         var permission = await permissions.GetAsync(id);
         if (permission is null)
-            return TypedResults.BadRequest("permission identifier is invalid");
+            return TypedResults.NotFound("permission identifier is invalid");
 
         role.Permissions.Add(permission);
         await roleManager.UpdateAsync(role);
@@ -86,11 +114,11 @@ public class PermissionsEndpoint : ICarterModule
     {
         var role = await roleManager.FindByIdAsync(roleId.ToString());
         if (role is null)
-            return TypedResults.BadRequest("role identifier is invalid");
+            return TypedResults.NotFound("role identifier is invalid");
 
         var permission = await permissions.GetAsync(id);
         if (permission is null)
-            return TypedResults.BadRequest("permission identifier is invalid");
+            return TypedResults.NotFound("permission identifier is invalid");
 
         role.Permissions.Remove(permission);
         await roleManager.UpdateAsync(role);
