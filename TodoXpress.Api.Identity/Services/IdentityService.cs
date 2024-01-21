@@ -71,6 +71,7 @@ internal sealed class IdentityService(
         return (result, user);
     }
 
+    /// <inheritdoc/>
     public async Task<IdentityResult> DeleteUserAsync(Guid userId)
     {
         var user = await userManager.FindByIdAsync(userId.ToString());

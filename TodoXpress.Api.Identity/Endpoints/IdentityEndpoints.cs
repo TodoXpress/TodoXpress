@@ -96,6 +96,12 @@ public class IdentityEndpoints : ICarterModule
         return TypedResults.Ok(loginResponse);
     }
 
+    /// <summary>
+    /// Logs an user out of the application.
+    /// </summary>
+    /// <param name="token">The service to manage tokens.</param>
+    /// <param name="request">The request with the data.</param>
+    /// <returns>An Http status result.</returns>
     public async Task<IResult> LogoutAsync([FromServices] ITokenService token, LogoutRequest request)
     {
         bool success = await token.InvalidateRefreshTokenAsync(request.UserId, request.ClientId);
