@@ -23,12 +23,18 @@ internal class IdentityContext : IdentityDbContext<User, Role, Guid>
         }
     }
 
-    protected override void OnModelCreating(ModelBuilder builder)
+   protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(builder);
+        base.OnModelCreating(modelBuilder);
 
-        builder.Entity<Permission>()
+        modelBuilder.Entity<Permission>()
             .HasMany(p => p.Scopes)
-            .WithMany();
+            .WithMany("Permissions")
+            .UsingEntity(j => j.ToTable("PermissionScopes"));
+
+        modelBuilder.Entity<Role>()
+            .HasMany(r => r.Permissions)
+            .WithMany("Roles")
+            .UsingEntity(j => j.ToTable("RolePermissions"));
     }
 }

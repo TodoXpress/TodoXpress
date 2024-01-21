@@ -34,6 +34,7 @@ app.UseAuthorization();
 var version = app.MapGroup("v1");
 
 version.MapCarter();
-version.MapGet("",() => Results.Ok());
+version.MapGet("",() => Results.Ok())
+    .ShortCircuit();
 
 app.Run();
