@@ -1,4 +1,5 @@
 ﻿using Carter;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TodoXpress.Api.Identity.DTOs;
@@ -17,6 +18,7 @@ public class IdentityEndpoints : ICarterModule
         app.MapPut("register", RegisterAsync);
         app.MapPost("login", LoginAsync);
         app.MapPost("logout", LogoutAsync);
+        app.MapDelete("delete", DeleteUserAsync);
 
         app.MapPost("refresh", RefreshAsync);
 
@@ -97,10 +99,26 @@ public class IdentityEndpoints : ICarterModule
 
     public async Task<IResult> LogoutAsync([FromServices] ITokenService token, LogoutRequest request)
     {
-        bool success = await token.InvalidateRefreshTokenAsync(request.UserId, request.RefreshToken);
+        bool success = await token.InvalidateRefreshTokenAsync(request.UserId, request.ClientId);
 
         if (!success)
             return TypedResults.BadRequest("Invalid userid or token");
+
+        return TypedResults.Ok();
+    }
+
+    /// <summary>
+    /// Deletes an User-Account and all data that belongs to it.
+    /// </summary>
+    /// <param name="identity">The service to interact witch the aspnet identity services.</param>
+    /// <param name="userId">The id of the user to delete.</param>
+    /// <returns>An Http status result.</returns>
+    public async Task<IResult> DeleteUserAsync([FromServices] IIdentityService identity, [FromRoute] Guid userId)
+    {
+        var result = await identity.DeleteUserAsync(userId);
+
+        if(!result.Succeeded)
+            this.CreateValidationProblem(result);
 
         return TypedResults.Ok();
     }

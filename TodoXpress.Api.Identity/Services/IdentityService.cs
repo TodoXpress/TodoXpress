@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.WebUtilities;
 using TodoXpress.Api.Identity.Entities;
+using TodoXpress.Api.Identity.Persistence;
 using TodoXpress.Api.Identity.Services.Interfaces;
 
 namespace TodoXpress.Api.Identity.Services;
@@ -15,7 +16,8 @@ internal sealed class IdentityService(
     IUserStore<User> userStore,
     IEmailSender<User> emailSender,
     LinkGenerator linkGenerator,
-    SignInManager<User> signInManager) : IIdentityService
+    SignInManager<User> signInManager,
+    IdentityContext context) : IIdentityService
 {
     /// <inheritdoc/>
     public bool IsEmailValid(string email)
@@ -33,7 +35,7 @@ internal sealed class IdentityService(
     /// <inheritdoc/>
     public async Task<(bool, User?)> LoginAsync(string email, string password)
     {
-        signInManager.AuthenticationScheme = IdentityConstants.BearerScheme;
+        //signInManager.AuthenticationScheme = IdentityConstants.BearerScheme;
         var result = await signInManager.PasswordSignInAsync(email, password, isPersistent: true, lockoutOnFailure: true);
 
         if (!result.Succeeded)
@@ -67,6 +69,28 @@ internal sealed class IdentityService(
         var result = await userManager.CreateAsync(user, request.Password);
 
         return (result, user);
+    }
+
+    public async Task<IdentityResult> DeleteUserAsync(Guid userId)
+    {
+        var user = await userManager.FindByIdAsync(userId.ToString());
+
+        var tokens = context.RefreshTokens
+            .Where(rt => Equals(rt.UserId, userId));
+
+        foreach (var token in tokens)
+        {
+            context.Remove(token);
+        }
+
+        await context.SaveChangesAsync();
+
+        if (user is null)
+            return IdentityResult.Failed(userManager.ErrorDescriber.InvalidUserName(userId.ToString()));
+
+        var result = await userManager.DeleteAsync(user);
+
+        return result;
     }
 
     /// <inheritdoc/>
