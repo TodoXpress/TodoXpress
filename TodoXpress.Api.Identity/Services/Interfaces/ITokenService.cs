@@ -35,7 +35,7 @@ public interface ITokenService
     /// Invalidates an existing refresh token.
     /// </summary>
     /// <param name="userId">The user, to whom the token belongs to.</param>
-    /// <param name="refreshToken">The refresh token.</param>
+    /// <param name="clientId">The if of the client.</param>
     /// <returns>A bool indication wheather the token is successfully invalidated or not.</returns>
-    Task<bool> InvalidateRefreshTokenAsync(string userId, string refreshToken);
+    Task<bool> InvalidateRefreshTokenAsync(Guid userId, Guid clientId);
 }

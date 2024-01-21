@@ -35,6 +35,13 @@ public interface IIdentityService
     Task<(IdentityResult, User?)> CreateUserAsync(RegisterRequest request);
 
     /// <summary>
+    /// Deletes an user account.
+    /// </summary>
+    /// <param name="userId">The id of the user.</param>
+    /// <returns>The Task that represents the asynchronous operation, containing the IdentityResult of the operation.</returns>
+    Task<IdentityResult> DeleteUserAsync(Guid userId);
+
+    /// <summary>
     /// Adds the user to the default role.
     /// </summary>
     /// <param name="user">The user to add to the role.</param>

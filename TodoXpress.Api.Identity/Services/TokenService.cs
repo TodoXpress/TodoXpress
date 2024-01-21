@@ -53,20 +53,21 @@ internal class TokenService(
     }
 
     /// <inheritdoc/>
-    public async Task<bool> InvalidateRefreshTokenAsync(string userId, string refreshToken)
+    public async Task<bool> InvalidateRefreshTokenAsync(Guid userId, Guid clientId)
     {
         var token = await context.RefreshTokens
-            .FirstOrDefaultAsync(rt => Equals(rt.UserId, userId) && Equals(rt.Token, refreshToken));
+            .Where(rt => Equals(rt.UserId, userId) && Equals(rt.ClientId, clientId))
+            .FirstOrDefaultAsync();
 
-        if (token == null)
+        if (token is null)
         {
             return false; // Token nicht gefunden
         }
 
-        context.Set<RefreshToken>().Remove(token);
-        await context.SaveChangesAsync();
+        var entity = context.Set<RefreshToken>().Remove(token);
+        int effectedRows = await context.SaveChangesAsync();
 
-        return true;
+        return entity.State == EntityState.Deleted && effectedRows > 0;
     }
 
     private async Task<(string token, DateTime expires)> GenerateJwtTokenAsync(User user)
