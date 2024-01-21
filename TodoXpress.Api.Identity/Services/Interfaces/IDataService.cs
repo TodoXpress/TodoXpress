@@ -1,6 +1,6 @@
 ﻿namespace TodoXpress.Api.Identity;
 
-public interface IDataService<T>
+public interface IDataService<T, TRequest>
 {
     /// <summary>
     /// Fetches all entites of type <see cref="T"/> from the database.
@@ -21,14 +21,15 @@ public interface IDataService<T>
     /// </summary>
     /// <param name="entity">The new entity.</param>
     /// <returns>A bool indicating wheather the operation was successful or not.</returns>
-    Task<bool> CreateAsync(T entity);
+    Task<bool> CreateAsync(TRequest entity);
 
     /// <summary>
     /// Updates a new entity of type <see cref="T"/>.
     /// </summary>
+    /// <param name="id">The id of the entity.</param>
     /// <param name="entity">The entity with the new values.</param>
     /// <returns>A bool indicating wheather the operation was successful or not.</returns>
-    Task<bool> Update(T entity);
+    Task<bool> UpdateAsync(Guid id, TRequest entity);
 
     /// <summary>
     /// Deletes a new entity of type <see cref="T"/>.

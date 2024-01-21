@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using TodoXpress.Api.Identity.DTOs;
 using TodoXpress.Api.Identity.Entities;
 using TodoXpress.Api.Identity.Persistence;
 using TodoXpress.Api.Identity.Services;
@@ -145,9 +146,10 @@ public static class ServiceRegistration
             };
         });
 
-        services.AddScoped<IDataService<Permission>, DataService<Permission>>();
-        services.AddScoped<IDataService<Ressource>, DataService<Ressource>>();
-        services.AddScoped<IDataService<Scope>, DataService<Scope>>();
+        services.AddScoped<IDataService<Role, RoleDTO>, RoleService>();
+        services.AddScoped<IDataService<Permission, PermissionDTO>, PermissionService>();
+        services.AddScoped<IDataService<Ressource, string>, RessourceService>();
+        services.AddScoped<IDataService<Scope, string>, ScopeService>();
 
         return services;
     }
