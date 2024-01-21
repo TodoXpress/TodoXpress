@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using TodoXpress.Api.Identity.Entities;
+using TodoXpress.Api.Identity.Services.Interfaces;
 
 namespace TodoXpress.Api.Identity.Endpoints;
 
@@ -9,19 +10,31 @@ public class AccountEndpoints : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
-        var acc = app.MapGroup("accounts/{id:guid}");
-        acc.MapGet("", GetInfos);
-        acc.MapPost("", UpdateInfos);
+        var acc = app.MapGroup("accounts/{id:guid}")
+            .RequireAuthorization();
 
-        var perm = acc.MapGroup("role");
+        acc.MapGet("", GetInfos)
+            .Produces(StatusCodes.Status401Unauthorized);
+        acc.MapPost("", UpdateInfos)
+            .Produces(StatusCodes.Status401Unauthorized);
+
+        acc.MapDelete("", DeleteUserAsync)
+            .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized)
+            .ProducesValidationProblem()
+            .WithOpenApi();
+
+        var perm = acc.MapGroup("roles");
         perm.MapPut("{roleId:guid}", AssignRoleAsync)
             .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status500InternalServerError)
             .WithOpenApi();
 
         perm.MapDelete("{roleId:guid}", RemoveRoleAsync)
             .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized)
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status500InternalServerError)
             .WithOpenApi();
@@ -43,6 +56,22 @@ public class AccountEndpoints : ICarterModule
     public IResult UpdateInfos()
     {
         return Results.Ok();
+    }
+
+    /// <summary>
+    /// Deletes an User-Account and all data that belongs to it.
+    /// </summary>
+    /// <param name="identity">The service to interact witch the aspnet identity services.</param>
+    /// <param name="userId">The id of the user to delete.</param>
+    /// <returns>An Http status result.</returns>
+    public async Task<IResult> DeleteUserAsync([FromServices] IIdentityService identity, [FromRoute] Guid id)
+    {
+        var result = await identity.DeleteUserAsync(id);
+
+        if(!result.Succeeded)
+            this.CreateValidationProblem(result);
+
+        return TypedResults.Ok();
     }
 
     /// <summary>

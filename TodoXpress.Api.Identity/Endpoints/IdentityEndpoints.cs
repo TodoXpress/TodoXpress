@@ -30,18 +30,16 @@ public class IdentityEndpoints : ICarterModule
         app.MapPost("logout", LogoutAsync)
             .Accepts<LogoutRequest>(Media.Application.Json)
             .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized)
             .Produces(StatusCodes.Status400BadRequest)
-            .WithOpenApi();
-
-        app.MapDelete("delete/{userId:Guid}", DeleteUserAsync)
-            .Produces(StatusCodes.Status200OK)
-            .ProducesValidationProblem()
+            .RequireAuthorization()
             .WithOpenApi();
 
         app.MapPost("refresh", RefreshAsync)
             .Accepts<RefreshTokenRequest>(Media.Application.Json)
             .Produces<LoginResponse>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized)
+            .RequireAuthorization()
             .WithOpenApi();
 
         // password endpoints
@@ -51,6 +49,7 @@ public class IdentityEndpoints : ICarterModule
             .Produces(StatusCodes.Status200OK)
             .ProducesValidationProblem()
             .WithOpenApi();
+
         pwd.MapPost("reset", ResetPassword)
             .Accepts<Microsoft.AspNetCore.Identity.Data.ResetPasswordRequest>(Media.Application.Json)
             .Produces(StatusCodes.Status200OK)
@@ -149,22 +148,6 @@ public class IdentityEndpoints : ICarterModule
 
         if (!success)
             return TypedResults.BadRequest("Invalid userid or token");
-
-        return TypedResults.Ok();
-    }
-
-    /// <summary>
-    /// Deletes an User-Account and all data that belongs to it.
-    /// </summary>
-    /// <param name="identity">The service to interact witch the aspnet identity services.</param>
-    /// <param name="userId">The id of the user to delete.</param>
-    /// <returns>An Http status result.</returns>
-    public async Task<IResult> DeleteUserAsync([FromServices] IIdentityService identity, [FromRoute] Guid userId)
-    {
-        var result = await identity.DeleteUserAsync(userId);
-
-        if(!result.Succeeded)
-            this.CreateValidationProblem(result);
 
         return TypedResults.Ok();
     }

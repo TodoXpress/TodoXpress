@@ -10,31 +10,36 @@ public class PermissionsEndpoint : ICarterModule
 {
     public void AddRoutes(IEndpointRouteBuilder app)
     {
+        var authorizedRoute = app.MapGroup("");
+        authorizedRoute.RequireAuthorization(p => p.RequireRole("admin"));
+
         // Maps role endpoints
-        var roles = app.MapGroup("roles");
+        var roles = authorizedRoute.MapGroup("roles");
         MapCRUD<Role>(roles);
         // Map endpoints for manage permissions of a role
-        var perm = roles.MapGroup("{roleId:guid}/permission/{id:guid}");
+        var perm = roles.MapGroup("{roleId:guid}/permissions/{id:guid}");
         perm.MapPut("", AssignPermissionAsync)
             .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized)
             .Produces(StatusCodes.Status404NotFound)
             .WithOpenApi();
 
         perm.MapDelete("", RemovePermissionAsync)
             .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized)
             .Produces(StatusCodes.Status404NotFound)
             .WithOpenApi();
 
         // map permission endpoints
-        var permissions = app.MapGroup("permissions");
+        var permissions = authorizedRoute.MapGroup("permissions");
         MapCRUD<Permission>(permissions);
 
         // map ressource endpoints
-        var ressources = app.MapGroup("ressources");
+        var ressources = authorizedRoute.MapGroup("ressources");
         MapCRUD<Ressource>(ressources);
 
         // map scope endpoints
-        var scopes = app.MapGroup("scopes");
+        var scopes = authorizedRoute.MapGroup("scopes");
         MapCRUD<Scope>(scopes);
     }
 
@@ -42,27 +47,32 @@ public class PermissionsEndpoint : ICarterModule
     {
         route.MapGet("", GetAllAsync<TType>)
             .Produces<IEnumerable<TType>>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized)
             .WithOpenApi();
 
         route.MapGet("{id:guid}", GetAsync<TType>)
             .Produces<TType>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized)
             .Produces(StatusCodes.Status404NotFound)
             .WithOpenApi();
 
         route.MapPut("", CreateAsync<TType>)
             .Accepts<TType>(Media.Application.Json)
             .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized)
             .Produces(StatusCodes.Status500InternalServerError)
             .WithOpenApi();
 
         route.MapPost("", UpdateAsync<TType>)
             .Accepts<TType>(Media.Application.Json)
             .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized)
             .Produces(StatusCodes.Status500InternalServerError)
             .WithOpenApi();
 
         route.MapDelete("{id:guid}", DeleteAsync<TType>)
             .Produces(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized)
             .Produces(StatusCodes.Status500InternalServerError)
             .WithOpenApi();
 
