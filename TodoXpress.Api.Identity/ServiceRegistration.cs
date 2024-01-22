@@ -98,6 +98,7 @@ public static class ServiceRegistration
         })
         .AddJwtBearer(options =>
         {
+            options.Audience = config["Jwt:Audience"];
             options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
