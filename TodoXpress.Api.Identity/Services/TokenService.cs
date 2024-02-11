@@ -96,6 +96,7 @@ internal class TokenService(
             Claims = new Dictionary<string, object>()
             {
                 { ClaimTypes.Email, user.Email ?? string.Empty },
+                { "confirmed", user.EmailConfirmed },
                 { ClaimTypes.Name, user.UserName ?? string.Empty },
                 { ClaimTypes.Version, config["ApiInfos:Version"] ?? string.Empty },
             },

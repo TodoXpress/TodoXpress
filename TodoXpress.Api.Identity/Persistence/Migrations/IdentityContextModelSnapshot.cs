@@ -168,7 +168,7 @@ namespace TodoXpress.Api.Identity.Migrations
 
                     b.HasIndex("RessourceId");
 
-                    b.ToTable("Permissions");
+                    b.ToTable("Permissions", (string)null);
                 });
 
             modelBuilder.Entity("TodoXpress.Api.Identity.Entities.RefreshToken", b =>
@@ -195,7 +195,7 @@ namespace TodoXpress.Api.Identity.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RefreshTokens");
+                    b.ToTable("RefreshTokens", (string)null);
                 });
 
             modelBuilder.Entity("TodoXpress.Api.Identity.Entities.Ressource", b =>
@@ -210,7 +210,7 @@ namespace TodoXpress.Api.Identity.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Ressources");
+                    b.ToTable("Ressources", (string)null);
                 });
 
             modelBuilder.Entity("TodoXpress.Api.Identity.Entities.Role", b =>
@@ -257,7 +257,7 @@ namespace TodoXpress.Api.Identity.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Scopes");
+                    b.ToTable("Scopes", (string)null);
                 });
 
             modelBuilder.Entity("TodoXpress.Api.Identity.Entities.User", b =>

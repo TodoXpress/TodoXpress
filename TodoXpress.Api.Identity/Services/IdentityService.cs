@@ -110,6 +110,43 @@ internal sealed class IdentityService(
         return result;
     }
 
+    public async Task<IdentityResult> AddUserToProRole(User user)
+    {
+        if (!await roleManager.RoleExistsAsync(Role.PayingUserRole))
+        {
+            await roleManager.CreateAsync(new Role()
+            {
+                Name = Role.PayingUserRole
+            });
+        }
+
+        var result = await userManager.AddToRoleAsync(user, Role.PayingUserRole);
+
+        return result;
+    }
+
+    public async Task<IdentityResult> AddUserToAdminRole(User user)
+    {
+        if (!await roleManager.RoleExistsAsync(Role.AdminUser))
+        {
+            await roleManager.CreateAsync(new Role()
+            {
+                Name = Role.AdminUser
+            });
+        }
+
+        var result = await userManager.AddToRoleAsync(user, Role.AdminUser);
+
+        return result;
+    }
+
+    public async Task<IdentityResult> RemoveUserFromRole(User user, string role)
+    {
+        var result = await userManager.RemoveFromRoleAsync(user, role);
+
+        return result;
+    }
+
     /// <inheritdoc/>
     public async Task<IdentityResult> ResetPasswordAsync(string email, string code, string newPassword)
     {

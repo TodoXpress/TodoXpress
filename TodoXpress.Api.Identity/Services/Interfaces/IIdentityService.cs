@@ -49,6 +49,28 @@ public interface IIdentityService
     Task<IdentityResult> AddUserToDefaultRoleAsync(User user);
 
     /// <summary>
+    /// Adds the user to the pro user role.
+    /// </summary>
+    /// <param name="user">The user to add to the role.</param>
+    /// <returns>The Task that represents the asynchronous operation, containing the IdentityResult of the operation.</returns>
+    Task<IdentityResult> AddUserToProRole(User user);
+
+    /// <summary>
+    /// Adds the user to the admin role.
+    /// </summary>
+    /// <param name="user">The user to add to the role.</param>
+    /// <returns>The Task that represents the asynchronous operation, containing the IdentityResult of the operation.</returns>
+    Task<IdentityResult> AddUserToAdminRole(User user);
+
+    /// <summary>
+    /// Removes the user from a role.
+    /// </summary>
+    /// <param name="user">The user to remove from the role.</param>
+    /// <param name="role">The role to remove the role from.</param>
+    /// <returns>The Task that represents the asynchronous operation, containing the IdentityResult of the operation.</returns>
+    Task<IdentityResult> RemoveUserFromRole(User user, string role);
+
+    /// <summary>
     /// Resets the password for a user.
     /// </summary>
     /// <param name="email">The email address of the user.</param>
