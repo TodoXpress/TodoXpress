@@ -46,7 +46,7 @@ public static class ServiceRegistration
                 Scheme = "Bearer",
                 BearerFormat = "JWT",
                 In = ParameterLocation.Header,
-                Description = "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\""
+                Description = "JWT Authorization header using the Bearer scheme. Example: \"Bearer {token}\"",
             });
 
             config.AddSecurityRequirement(new OpenApiSecurityRequirement()
@@ -57,7 +57,7 @@ public static class ServiceRegistration
                         Reference = new OpenApiReference
                         {
                             Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
+                            Id = JwtBearerDefaults.AuthenticationScheme,
                         }
                     },
                     ["TodoXpress"]
@@ -98,6 +98,7 @@ public static class ServiceRegistration
         })
         .AddJwtBearer(options =>
         {
+            options.Audience = config["Jwt:Audience"];
             options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
