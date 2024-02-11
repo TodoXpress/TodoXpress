@@ -23,9 +23,9 @@ internal sealed class EmailService : SmtpClient, IEmailSender<User>
         var message = new MailMessage(FromAddress, email)
         {
             Subject = "Bestätigen Sie Ihre E-Mail-Adresse",
-            Body = $"Bitte bestätigen Sie Ihre E-Mail-Adresse, indem Sie auf den folgenden Link klicken: {confirmationLink}"
+            Body = $"Bitte klicken Sie <a href=\"{confirmationLink}\">hier</a> um Ihre E-Mail-Adresse zu bestätigen",
+            IsBodyHtml = true
         };
-        // await Task.Delay(0);
         await this.SendMailAsync(message);
     }
 
@@ -41,7 +41,8 @@ internal sealed class EmailService : SmtpClient, IEmailSender<User>
          var message = new MailMessage(FromAddress, email)
         {
             Subject = "Passwort-Reset-Code",
-            Body = $"Ihr Code zum Zurücksetzen des Passworts lautet: {resetCode}"
+            Body = $"Ihr Code zum Zurücksetzen des Passworts lautet:\r\n{resetCode}",
+            IsBodyHtml = true
         };
         // await Task.Delay(0);
         await this.SendMailAsync(message);
@@ -59,7 +60,8 @@ internal sealed class EmailService : SmtpClient, IEmailSender<User>
         var message = new MailMessage(FromAddress, email)
         {
             Subject = "Link zum Zurücksetzen des Passworts",
-            Body = $"Bitte klicken Sie auf den folgenden Link, um Ihr Passwort zurückzusetzen: {resetLink}"
+            Body = $"Bitte klicken Sie <a href=\"{resetLink}\">hier</a>, um Ihr Passwort zurückzusetzen.",
+            IsBodyHtml = true
         };
         // await Task.Delay(0);
         await this.SendMailAsync(message);
