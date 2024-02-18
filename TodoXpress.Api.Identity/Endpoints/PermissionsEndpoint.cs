@@ -12,7 +12,7 @@ public class PermissionsEndpoint : ICarterModule
     public void AddRoutes(IEndpointRouteBuilder app)
     {
         var authorizedRoute = app.MapGroup("");
-        authorizedRoute.RequireAuthorization(r => r.RequireRole(Role.AdminUser));
+        authorizedRoute.RequireAuthorization(Role.AdminUser);
 
         // Maps role endpoints
         var roles = authorizedRoute.MapGroup("roles");

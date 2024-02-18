@@ -149,6 +149,7 @@ public static class ServiceRegistration
             .AddPolicy(Role.AdminUser, p => p.RequireRole(Role.AdminUser))
             .AddPolicy(Role.DefaultUserRole, p => p.RequireRole(Role.DefaultUserRole))
             .AddPolicy(Role.PayingUserRole, p => p.RequireRole(Role.PayingUserRole));
+            
         return services;
     }
 
