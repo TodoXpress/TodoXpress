@@ -37,4 +37,5 @@ version.MapCarter();
 version.MapGet("",() => Results.Ok())
     .ShortCircuit();
 
+app.AddAdminUser().Wait();
 app.Run();

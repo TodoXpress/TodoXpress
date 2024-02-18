@@ -22,6 +22,35 @@ public static class ServiceRegistration
     //     return services;
     // }
 
+    public static async Task AddAdminUser(this WebApplication app)
+    {
+        try
+        {
+            var scope = app.Services.CreateAsyncScope();
+            var userStore = scope.ServiceProvider.GetRequiredService<IUserStore<User>>();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+
+            var emailStore = (IUserEmailStore<User>)userStore;
+            var email = "admin@mailhog.com";
+            var password = "admin1@todoXpress";
+
+            var existingUser = await userManager.FindByEmailAsync(email);
+            if (existingUser is not null)
+                return;
+
+            var user = new User();
+            await userStore.SetUserNameAsync(user, email, CancellationToken.None);
+            await emailStore.SetEmailAsync(user, email, CancellationToken.None);
+            var result = await userManager.CreateAsync(user, password);
+
+            var code = await userManager.GenerateEmailConfirmationTokenAsync(user);
+            await userManager.ConfirmEmailAsync(user, code);
+
+            await userManager.AddToRoleAsync(user, Role.AdminUser);
+        }
+        catch (Exception){}
+    }
+
     public static IServiceCollection AddSwagger(this IServiceCollection services)
     {
         services.AddEndpointsApiExplorer();
@@ -116,7 +145,10 @@ public static class ServiceRegistration
 
     public static IServiceCollection AddConfiguredAuthorization(this IServiceCollection services)
     {
-        services.AddAuthorizationBuilder();
+        services.AddAuthorizationBuilder()
+            .AddPolicy(Role.AdminUser, p => p.RequireRole(Role.AdminUser))
+            .AddPolicy(Role.DefaultUserRole, p => p.RequireRole(Role.DefaultUserRole))
+            .AddPolicy(Role.PayingUserRole, p => p.RequireRole(Role.PayingUserRole));
         return services;
     }
 
